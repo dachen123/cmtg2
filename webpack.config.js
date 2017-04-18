@@ -1,10 +1,13 @@
 var webpack = require('webpack')
+var path = require('path')
+
 var CompressionWebpackPlugin = require('compression-webpack-plugin')
 module.exports = {
-    entry: './js/line_chart.js',
+    entry: './static/web/js/line_chart.js',
     output: {
-        path: __dirname,
-        filename: './dist/line_chart.js'
+        path: path.resolve(__dirname, './static/web/dist'),
+        publicPath: '/static/web/dist/',
+        filename: 'line_chart.js'
     },
     resolve: {
         extensions: ['.css', '.js', '.vue'],
@@ -57,7 +60,7 @@ module.exports = {
     }),
     new webpack.optimize.UglifyJsPlugin({
       sourceMap: true,
-      compress: false,
+      comments: false,
       compress: {
         warnings: false
       }

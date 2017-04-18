@@ -1,4 +1,4 @@
-static/dist/*
-static/node_modules/*
+static/web/dist/*
+node_modules/*
 *.swp
 */core

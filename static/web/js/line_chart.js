@@ -1,36 +1,23 @@
-
 import Vue from 'vue'
 import lineChart from '../components/lineChart/lineChart.js'
+import { config } from './common.js'
 
 (function(global){
+    window.config = config
     var chart = new Vue({
              
         el:'#cm-line-chart',
         data:{
             options: {
-  responsive: true,
-  // グラフタイトル
-  title: {
-    display: false
-  },
-  // 凡例
-  legend: {
-    position: 'right'
-  }
+                responsive: true,
+                title: {
+                    display: false
+                },
+                legend: {
+                    position: 'right'
+                }
 
             },
-
-
-      //       datacollection: {
-      // labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-      // datasets: [
-      //   {
-      //     label: 'Data One',
-      //     backgroundColor: '#f87979',
-      //     data: [40, 39, 10, 40, 39, 80, 40]
-      //   }
-      // ]}
-      // datacollection 默认不能是null，否则数据不显示
             datacollection:{}
 
         },
@@ -39,10 +26,6 @@ import lineChart from '../components/lineChart/lineChart.js'
         },
         mounted: function() {
             this.fillData()
-    // setInterval(() => {
-    //   this.fillData()
-    // }, 1000)
-            
         },
         methods: {
             fillData: function() {
