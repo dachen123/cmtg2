@@ -1,4 +1,7 @@
 import Vue from 'vue'
+import VueResource from 'vue-resource';
+Vue.use(VueResource);
+
 import lineChart from '../components/lineChart/lineChart.js'
 import { config } from './common.js'
 
@@ -29,20 +32,10 @@ import { config } from './common.js'
         },
         methods: {
             fillData: function() {
-                this.datacollection = {
-                    labels: [this.getRandomInt(), this.getRandomInt()],
-                    datasets: [
-                    {
-                        label: 'Data One',
-                        backgroundColor: '#f87979',
-                        data: [this.getRandomInt(), this.getRandomInt()]
-                    }, {
-                        label: 'Data One',
-                        backgroundColor: '#f87979',
-                        data: [this.getRandomInt(), this.getRandomInt()]
-                    }
-                    ]
-                }
+                this.$http.get(config.server_domain+'/get_indicator_statistics_data',{})
+                    .then(function(res){
+                        this.datacollection = res.body.result.indicator_data_list;
+                    })
             },
             getRandomInt: function() {
                 return Math.floor(Math.random() * (50 - 5 + 1)) + 5
