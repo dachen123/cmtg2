@@ -3,11 +3,11 @@ var path = require('path')
 
 var CompressionWebpackPlugin = require('compression-webpack-plugin')
 module.exports = {
-    entry: './static/web/js/homepage.js',
+    entry: './static/web/js/project_info.js',
     output: {
         path: path.resolve(__dirname, './static/web/dist'),
         publicPath: '/static/web/dist/',
-        filename: 'homepage.js'
+        filename: 'project_info.js'
     },
     resolve: {
         extensions: ['.css', '.js', '.vue'],
@@ -23,26 +23,22 @@ module.exports = {
         {
             test: /\.vue$/,
             loader: 'vue-loader',
+            options: {
+                loaders: {
+                    // Since sass-loader (weirdly) has SCSS as its default parse mode, we map
+                    // the "scss" and "sass" values for the lang attribute to the right configs here.
+                    // other preprocessors should work out of the box, no loader config like this nessessary.
+                    'scss': 'vue-style-loader!css-loader!sass-loader',
+                    'sass': 'vue-style-loader!css-loader!sass-loader?indentedSyntax'
+                }
+                         // other vue-loader options go here
+            }
         },
-      {
-        test: /\.vue$/,
-        loader: 'vue-loader',
-        options: {
-          loaders: {
-            // Since sass-loader (weirdly) has SCSS as its default parse mode, we map
-            // the "scss" and "sass" values for the lang attribute to the right configs here.
-            // other preprocessors should work out of the box, no loader config like this nessessary.
-            'scss': 'vue-style-loader!css-loader!sass-loader',
-            'sass': 'vue-style-loader!css-loader!sass-loader?indentedSyntax'
-          }
-          // other vue-loader options go here
+        {
+            test: /\.js$/,
+            loader: 'babel-loader',
+            exclude: /node_modules/
         }
-      },
-      {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        exclude: /node_modules/
-      }
 
         ]
     },
@@ -53,31 +49,31 @@ module.exports = {
         //         warnings: false
         //     }
         // })
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: '"production"'
-      }
-    }),
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
-      comments: false,
-      compress: {
-        warnings: false
-      }
-    }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true
-    }),
-     new webpack.optimize.CommonsChunkPlugin({name:'vendor',  filename:'vendor.bundle.js'}),
-    new CompressionWebpackPlugin({ 
-        asset: '[path].gz[query]',
-        algorithm: 'gzip',
-        test: new RegExp(
-            '\\.(js|css)$'   
-        ),
-        threshold: 10240,
-        minRatio: 0.8
-    })
+    // new webpack.DefinePlugin({
+    //   'process.env': {
+    //     NODE_ENV: '"production"'
+    //   }
+    // }),
+    // new webpack.optimize.UglifyJsPlugin({
+    //   sourceMap: true,
+    //   comments: false,
+    //   compress: {
+    //     warnings: false
+    //   }
+    // }),
+    // new webpack.LoaderOptionsPlugin({
+    //   minimize: true
+    // }),
+     // new webpack.optimize.CommonsChunkPlugin({name:'vendor',  filename:'vendor.bundle.js'}),
+    // new CompressionWebpackPlugin({ 
+    //     asset: '[path].gz[query]',
+    //     algorithm: 'gzip',
+    //     test: new RegExp(
+    //         '\\.(js|css)$'   
+    //     ),
+    //     threshold: 10240,
+    //     minRatio: 0.8
+    // })
         
     
     ]
