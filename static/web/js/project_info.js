@@ -21,7 +21,9 @@ import ProjectIndicatorItem from '../components/project_indicator_item.vue'
         el:'#project-root-component',
         data:{
             project_info_list:[] ,
-            indicator_info_list:[]
+            indicator_info_list:[],
+            project_id:null,
+            company_id:null
         },
         created:function(){
             this.fetch_project_list()
@@ -33,7 +35,17 @@ import ProjectIndicatorItem from '../components/project_indicator_item.vue'
         },
         methods:{
             fetch_project_list:function(){
-                this.$http.get(config.server_domain+'/get_project_list',{})
+                this.project_id = config.GetURLParameter('project_id');
+                this.company_id = config.GetURLParameter('company_id');
+                var data = {
+                    company_id:this.company_id
+                }
+                if (this.project_id){
+                    data.project_id=this.project_id
+                }
+                this.$http.get(config.server_domain+'/get_project_list',{
+                    params:data
+                })
                     .then(function(res){
                         this.project_info_list = res.body.result.project_info_list
                     }) 
@@ -43,6 +55,10 @@ import ProjectIndicatorItem from '../components/project_indicator_item.vue'
                     .then(function(res){
                         this.indicator_info_list = res.body.result.indicator_info_list
                     }) 
+            },
+            redirect_to_create:function(){
+                window.location.href="/create_project?company_id="+this.company_id+"&parent_id="+this.project_id;
+            
             }
         }
         

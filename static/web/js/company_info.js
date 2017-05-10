@@ -10,7 +10,8 @@ import CompanyProjectItem from '../components/company_project_item.vue'
 
 (function(global){
 
-
+        //日期选择器的使用:http://eonasdan.github.io/bootstrap-datetimepicker/Functions/#defaultdate
+        //moment.js ：http://momentjs.com/docs/#/manipulating/local/
     // Vue.component('urgent-indicator-item',
     //         HomeUrgentIndicator);
     // Vue.component('company-item',
@@ -20,6 +21,12 @@ import CompanyProjectItem from '../components/company_project_item.vue'
         el:'#company-root-component',
         data:{
             project_info_list:[] ,
+            // inherit_type:"no",
+            // project_name: "",
+            // project_desc: "",
+            // project_image:"",
+            // leader_id:"",
+            // contact_id:"",
         },
         created:function(){
             this.fetch_project_list()
@@ -29,10 +36,31 @@ import CompanyProjectItem from '../components/company_project_item.vue'
         },
         methods:{
             fetch_project_list:function(){
-                this.$http.get(config.server_domain+'/get_project_list',{})
+                var project_id = config.GetURLParameter('project_id');
+                var company_id = config.GetURLParameter('company_id');
+                var data = {
+                    company_id:company_id
+                }
+                if (project_id){
+                    data.project_id=project_id
+                }
+                this.$http.get(config.server_domain+'/get_project_list',{
+                    params:data
+                })
                     .then(function(res){
                         this.project_info_list = res.body.result.project_info_list
                     }) 
+            },
+            redirect_to_create:function(){
+                var parent_id = config.GetURLParameter('parent_id');
+                var company_id = config.GetURLParameter('company_id');
+                if (parent_id){
+                    window.location.href="/create_project?company_id="+company_id+"&parent_id="+parent_id;
+                }else{
+                    window.location.href="/create_project?company_id="+company_id;
+                }
+
+                 
             }
         }
         

@@ -2,7 +2,7 @@
     <li :id="id_string(item.company_id)" class="item attachment-block ">
         <img class="attachment-img" :src="item.company_image" alt="Attachment Image">
         <div class="attachment-pushed">
-            <h4 class="attachment-heading"><a href="/company_info">{{item.company_name}}</a></h4>
+            <h4 class="attachment-heading"><a :href="item.home_addr">{{item.company_name}}</a></h4>
 
             <div class="attachment-text">
                 {{item.company_desc}}<a href="#">more</a>

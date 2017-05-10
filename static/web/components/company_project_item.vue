@@ -4,7 +4,7 @@
             <img :src="item.project_image" alt="Product Image">
         </div>
         <div class="product-info">
-            <a href="javascript:void(0)" class="product-title">{{item.project_name}}
+            <a :href="item.home_addr" class="product-title">{{item.project_name}}
                 <!-- <span class="label label&#45;warning pull&#45;right">$1800</span> -->
                 <button class="btn btn-xs btn-danger pull-right">删除</button>
                 <button class="btn btn-xs btn-primary pull-right update-project-btn" style="margin-right:10px;">编辑</button>
