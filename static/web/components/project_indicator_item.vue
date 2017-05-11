@@ -1,12 +1,16 @@
 <template>
     <tr :id="id_string(item.indicator_id)">
         <td><a href="oprate_plan.html">{{item.indicator_name}}</a></td>
-        <td>{{item.forum}}</td>
+        <td>{{item.forum.name}}</td>
+        <!-- <td> -->
+        <!--     {{item.statistics_method}} -->
+        <!-- </td> -->
         <td>
-            {{item.statistics_method}}
+            原始值
         </td>
-        <td><span class="label label-success">{{item.status}}</span></td>
-        <td><button class="btn btn-xs btn-primary update-index-btn" style="margin-right:5px;">编辑</button><button class="btn btn-xs btn-danger" >删除</button></td>
+        <!-- <td><span class="label label-success">{{item.status}}</span></td> -->
+        <td><span class="label label-success">正常</span></td>
+        <td><button v-on:click="redirect_to_update" class="btn btn-xs btn-primary update-index-btn" style="margin-right:5px;">编辑</button><button class="btn btn-xs btn-danger" >删除</button></td>
     </tr>
 
 </template>
@@ -17,6 +21,9 @@
         methods:{
             id_string:function(id){
                 return "indicator-"+id
+            },
+            redirect_to_update:function(){
+                window.location.href='/edit_indicator?indicator_id='+item.indicator_id;
             }
         }
         

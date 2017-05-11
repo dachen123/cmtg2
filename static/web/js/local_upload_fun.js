@@ -1,67 +1,67 @@
-var uploader = new plupload.Uploader({
-    runtimes : 'html5,flash,silverlight,html4',
+// var uploader = new plupload.Uploader({
+//     runtimes : 'html5,flash,silverlight,html4',
+//
+//     // browse_button : 'pickfiles', // you can pass in id...
+//     // container: document.getElementById('container'), // ... or DOM Element itself
+//
+//     url : "/upload_image",
+//
+//     multipart_params: {
+//         classify: 'test',
+//     },
+//
+//     // filters : {
+//     //     max_file_size : '10mb',
+//     //     mime_types: [
+//     //     {title : "Image files", extensions : "jpg,gif,png"},
+//     //     ]
+//     // },
+//
+//     // Flash settings
+//     flash_swf_url : '/static/web/plugins/plupload/Moxie.swf',
+//
+//     // Silverlight settings
+//     silverlight_xap_url : 'static/web/plugins/plupload/Moxie.xap',
+//
+//
+//     init: {
+//         // PostInit: function() {
+//         //     document.getElementById('filelist').innerHTML = '';
+//         //
+//         //     document.getElementById('uploadfiles').onclick = function() {
+//         //         uploader.start();
+//         //         return false;
+//         //     };
+//         // },
+//
+//         FilesAdded: function(up, files) {
+//             // plupload.each(files, function(file) {
+//             //     document.getElementById('filelist').innerHTML += '<div id="' + file.id + '">' + file.name + ' (' + plupload.formatSize(file.size) + ') <b></b></div>';
+//             // });
+//             
+//             //显示添加进来的文件名
+//             $.each(files, function(key, value){
+//                 console.log('添加文件' + value.name);
+//             });
+//
+//             // 文件添加之后，开始执行上传
+//             uploader.start();
+//         },
+//
+//         UploadProgress: function(up, file) {
+//         },
+//
+//         Error: function(up, err) {
+//             // document.getElementById('console').innerHTML += "\nError #" + err.code + ": " + err.message;
+//         }
+//     }
+// });
+//
+// uploader.init();
+//  
 
-    // browse_button : 'pickfiles', // you can pass in id...
-    // container: document.getElementById('container'), // ... or DOM Element itself
 
-    url : "/upload_image",
-
-    multipart_params: {
-        classify: 'test',
-    },
-
-    // filters : {
-    //     max_file_size : '10mb',
-    //     mime_types: [
-    //     {title : "Image files", extensions : "jpg,gif,png"},
-    //     ]
-    // },
-
-    // Flash settings
-    flash_swf_url : '/static/web/plugins/plupload/Moxie.swf',
-
-    // Silverlight settings
-    silverlight_xap_url : 'static/web/plugins/plupload/Moxie.xap',
-
-
-    init: {
-        // PostInit: function() {
-        //     document.getElementById('filelist').innerHTML = '';
-        //
-        //     document.getElementById('uploadfiles').onclick = function() {
-        //         uploader.start();
-        //         return false;
-        //     };
-        // },
-
-        FilesAdded: function(up, files) {
-            // plupload.each(files, function(file) {
-            //     document.getElementById('filelist').innerHTML += '<div id="' + file.id + '">' + file.name + ' (' + plupload.formatSize(file.size) + ') <b></b></div>';
-            // });
-            
-            //显示添加进来的文件名
-            $.each(files, function(key, value){
-                console.log('添加文件' + value.name);
-            });
-
-            // 文件添加之后，开始执行上传
-            uploader.start();
-        },
-
-        UploadProgress: function(up, file) {
-        },
-
-        Error: function(up, err) {
-            // document.getElementById('console').innerHTML += "\nError #" + err.code + ": " + err.message;
-        }
-    }
-});
-
-uploader.init();
- 
-
-
-function init_upload_crop_pic_model(modal_id,input_id,result_id,pic_type,width,height){ 
+function init_upload_crop_pic_model(modal_id,input_id,result_id,pic_type,width,height,callback){ 
     var $uploadCrop; 
     var files = null;
     var crop_blob_file = null;
@@ -161,12 +161,18 @@ function init_upload_crop_pic_model(modal_id,input_id,result_id,pic_type,width,h
                 console.log('Upload success');
                 $('#'+modal_id).modal('hide');
                 $("#"+result_id).val(json.result.url); 
+                if (callback){
+                    callback(json.result.url);
+                }
             },
             error: function () {
                 console.log('Upload error');
                 $('#'+modal_id).modal('hide');
                 $("#"+result_id).val(res.url); 
                 $("#"+result_id).val(json.result.url); 
+                if ( callback ){
+                    callback(json.result.url);
+                }
             }
         }); 
     };
@@ -198,7 +204,7 @@ function init_upload_crop_pic_model(modal_id,input_id,result_id,pic_type,width,h
         // uploader.setOption('multipart_params',{
         //     classify: pic_type,
         // });
-        uploader.settings.multipart_params = {'classify' : pic_type}; 
+        // uploader.settings.multipart_params = {'classify' : pic_type}; 
         if($('#'+modal_id+' #is-crop').is(':checked')){
             uploadFile(); 
 

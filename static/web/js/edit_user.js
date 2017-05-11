@@ -44,6 +44,8 @@ import UserItem from '../components/user_item.vue'
                 var user_info = {
                     user_id:"",
                     user_name:"",
+                    image:"",
+                    sex:"male",
                     job_level:"",
                     job_role:"",
                     phone:"",
@@ -64,7 +66,9 @@ import UserItem from '../components/user_item.vue'
             user_name:"",
             job_level:"",
             job_role:"",
+            image:"",
             phone:"",
+            sex  :"male",
             email:"",
             company:"",
             oprate:'create'
@@ -83,6 +87,8 @@ import UserItem from '../components/user_item.vue'
                     user_name :this.user_name,
                     job_level :this.job_level,
                     job_role  :this.job_role,
+                    image     :this.image,
+                    sex       :this.sex,
                     phone     :this.phone,
                     email     :this.email,
                 }
@@ -116,15 +122,21 @@ import UserItem from '../components/user_item.vue'
                 this.oprate = op;
                 this.user_id = user_info.user_id;
                 this.user_name = user_info.name;
+                this.image = user_info.image;
                 this.job_level = user_info.job_level;
                 this.job_role = user_info.job_role;
                 // this.phone = user_info.phone;
+                this.sex = user_info.sex;
                 this.email = user_info.email;
                 $('#add-new-user').modal('show');
             }.bind(this)); 
         }
         
     });
+    window.set_modal_image = function(url){
+     
+        modal.image = url;
+    };
 
 
 })(this);

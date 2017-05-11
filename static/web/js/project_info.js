@@ -51,7 +51,11 @@ import ProjectIndicatorItem from '../components/project_indicator_item.vue'
                     }) 
             },
             fetch_indicator_list:function(){
-                this.$http.get(config.server_domain+'/get_urgent_indicator',{})
+                this.$http.get(config.server_domain+'/get_indicator_list',{
+                    params:{
+                        project_id:this.project_id
+                    }
+                })
                     .then(function(res){
                         this.indicator_info_list = res.body.result.indicator_info_list
                     }) 
