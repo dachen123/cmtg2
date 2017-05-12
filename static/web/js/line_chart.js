@@ -3,13 +3,14 @@ import VueResource from 'vue-resource';
 Vue.use(VueResource);
 
 import lineChart from '../components/lineChart/lineChart.js'
+import IndicatorTableItem from '../components/line_table_item.vue'
 import { config } from './common.js'
 
 (function(global){
     window.config = config
     var chart = new Vue({
              
-        el:'#cm-line-chart',
+        el:'#hty-chart',
         data:{
             options: {
                 responsive: true,
@@ -17,28 +18,62 @@ import { config } from './common.js'
                     display: false
                 },
                 legend: {
-                    position: 'right'
                 }
 
             },
-            datacollection:{}
+            datacollection:{},
+            indicator_id:"",
+            project_id:"",
+            tabledatacollection:[],
 
         },
         components:{
-            lineChart 
+            lineChart,
+            IndicatorTableItem
         },
         mounted: function() {
-            this.fillData()
+            this.fillData();
+            this.get_indicator_table_list();
         },
         methods: {
             fillData: function() {
-                this.$http.get(config.server_domain+'/get_indicator_statistics_data',{})
+                // this.$http.get(config.server_domain+'/get_indicator_statistics_data',{})
+                this.indicator_id = config.GetURLParameter('indicator_id');
+                this.project_id = config.GetURLParameter('project_id');
+                this.$http.get(config.server_domain+'/get_indicator_data_list',{
+                    params:{
+                        indicator_id:this.indicator_id,
+                        project_id:this.project_id
+                    }
+                })
                     .then(function(res){
-                        this.datacollection = res.body.result.indicator_data_list;
+                        var ret = config.parsebody(res.body,function(ret){
+                            // this.datacollection = res.body.result.indicator_data_list;
+                            // this.datacollection = ret.indicator_data_list;
+                        });
+                        if (ret){
+                            this.datacollection = ret.indicator_data_list;
+                        
+                        }
                     })
             },
             getRandomInt: function() {
                 return Math.floor(Math.random() * (50 - 5 + 1)) + 5
+            },
+            get_indicator_table_list:function(){
+                this.$http.get(config.server_domain+'/get_indicator_table_data_list',{
+                    params:{
+                        indicator_id:this.indicator_id,
+                        project_id:this.project_id
+                    }
+                })
+                    .then(function(res){
+                        var ret = config.parsebody(res.body,function(ret){
+                        });
+                        if (ret){
+                            this.tabledatacollection = ret.table_data_list;
+                        }
+                    })
             }
         }
         

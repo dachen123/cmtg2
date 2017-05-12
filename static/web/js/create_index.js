@@ -23,7 +23,10 @@ import { config } from './common.js'
             forum:"",
             collect_period:"",
             project_id:"",
-            indicator_id:null
+            indicator_id:null,
+            data_value:"",
+            data_desc:"",
+            data_attachment:""
         },
         http:{
             emulateJSON: true,
@@ -33,7 +36,9 @@ import { config } from './common.js'
             // this.fetch_project_list()
             this.project_id = config.GetURLParameter('project_id');
             this.indicator_id = config.GetURLParameter('indicator_id');
-            this.get_indicator_info();
+            if (this.indicator_id){
+                this.get_indicator_info();
+            }
         },
         // components:{
         //     CompanyProjectItem
@@ -105,6 +110,22 @@ import { config } from './common.js'
                 
                 });
             
+            },
+            post_i_data_by_manual:function(){
+                var data_time = $('#i-data-datetimepicker').data('DateTimePicker').date().unix();
+                this.$http.post('/post_i_data_by_manual',{
+                    indicator_id: this.indicator_id,
+                    project_id  : this.project_id,
+                    data_value : this.data_value,
+                    data_desc  : this.data_desc,
+                    data_time   : data_time,
+                    data_attachment: this.data_attachment
+                }).then(function(r){
+                    config.parsebody(r.body);
+                    console.log(r.body);
+                    // this.indicator_id=r.body.result.indicator_info.indicator_id;
+                    // window.location.href='/edit_indicator?project_id='+this.project_id+'&indicator_id='+this.indicator_id;
+                }) 
             }
         }
         

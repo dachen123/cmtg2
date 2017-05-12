@@ -25,12 +25,19 @@ config.GetURLParameter = function(sParam){
     }
 }
 
-config.parsebody = function(body){
+config.parsebody = function(body,callback){
     if(body.error_code != 'OK'){
         alert(body.message); 
         console.log(body.message); 
+        return null
     }
-    return body.result
+    else{
+            alert('ok');
+        if(callback){
+            callback(body.result); 
+        } 
+        return body.result
+    }
 }
 
 //寻找层级

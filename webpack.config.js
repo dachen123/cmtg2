@@ -3,11 +3,11 @@ var path = require('path')
 
 var CompressionWebpackPlugin = require('compression-webpack-plugin')
 module.exports = {
-    entry: './static/web/js/edit_user.js',
+    entry: './static/web/js/line_chart.js',
     output: {
         path: path.resolve(__dirname, './static/web/dist'),
         publicPath: '/static/web/dist/',
-        filename: 'edit_user.js'
+        filename: 'line_chart.js'
     },
     resolve: {
         extensions: ['.css', '.js', '.vue'],
