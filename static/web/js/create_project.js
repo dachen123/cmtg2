@@ -61,6 +61,11 @@ import { config } from './common.js'
         
     });
 
+    window.set_company_image = function(url){
+     
+        root.project_image = url;
+    };
+
         var default_time = moment().local();
         $('#p-create-datetimepicker').datetimepicker({
             locale: 'zh-cn',

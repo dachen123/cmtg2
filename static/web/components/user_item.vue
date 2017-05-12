@@ -1,9 +1,9 @@
 <template>
     <tr :id="id_string(item.user_id)">
         <td>{{item.name}}</td>
-        <td><img src="static/web/img/user2-160x160.jpg" class="img-circle" alt="User Image" style="max-width:45px;"></td>
+        <td><img :src="item.image" class="img-circle" alt="User Image" style="max-width:45px;"></td>
         <td>{{item.job_level}}</td>
-        <td>1381113xxxx</td>
+        <td>{{item.phone}}</td>
         <td>{{item.email}}</td>
         <td>普通</td>
         <td>{{item.company}}</td>
