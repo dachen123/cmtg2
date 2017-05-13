@@ -1,7 +1,7 @@
 <template>
     <li :id="id_string(item.project_id)" class="item">
         <div class="product-img">
-            <img :src="item.project_image" alt="Product Image">
+            <img :src="item.image" alt="Product Image">
         </div>
         <div class="product-info">
             <span class="product-title"><a :href="item.home_addr" >{{item.project_name}}</a>

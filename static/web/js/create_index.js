@@ -105,7 +105,7 @@ import { config } from './common.js'
                     this.read_interface=indicator_info.read_interface;
                     this.indicator_name=indicator_info.indicator_name,
                     this.indicator_proverty=indicator_info.indicator_proverty,
-                    this.forum=indicator_info.forum,
+                    this.forum=indicator_info.forum.board_id,
                     this.collect_period=indicator_info.collect_period
                 
                 });
@@ -121,15 +121,23 @@ import { config } from './common.js'
                     data_time   : data_time,
                     data_attachment: this.data_attachment
                 }).then(function(r){
-                    config.parsebody(r.body);
+                    config.parsebody(r.body,function(){
+                        $('#manual-upload-success-tip').modal('show');
+                    });
                     console.log(r.body);
                     // this.indicator_id=r.body.result.indicator_info.indicator_id;
                     // window.location.href='/edit_indicator?project_id='+this.project_id+'&indicator_id='+this.indicator_id;
+                    
                 }) 
+            },
+            redirect_to_chart:function(){
+                    window.location.href='/chart?project_id='+this.project_id+'&indicator_id='+this.indicator_id;
+            
             }
         }
         
     });
+    window.root=root;
 
 
 })(this);

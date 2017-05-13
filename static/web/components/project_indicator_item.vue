@@ -1,6 +1,6 @@
 <template>
     <tr :id="id_string(item.indicator_id)">
-        <td><a href="oprate_plan.html">{{item.indicator_name}}</a></td>
+        <td><a :href="item.chart_addr">{{item.indicator_name}}</a></td>
         <td>{{item.forum.name}}</td>
         <!-- <td> -->
         <!--     {{item.statistics_method}} -->
@@ -23,7 +23,7 @@
                 return "indicator-"+id
             },
             redirect_to_update:function(){
-                window.location.href='/edit_indicator?indicator_id='+item.indicator_id;
+                window.location.href='/edit_indicator?indicator_id='+this.item.indicator_id+'&project_id='+this.item.project_id;
             }
         }
         

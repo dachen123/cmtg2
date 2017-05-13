@@ -36,7 +36,7 @@ import { config } from './common.js'
                     var r = config.parsebody(res.body);
                     var project_info = r.project_info;
                     this.project_name = project_info.project_name;
-                    this.project_image = project_info.project_image;
+                    this.project_image = project_info.image;
                     this.project_desc = project_info.project_desc;
                     this.leader_id = project_info.leader.user_id;
                     this.contact_id  = project_info.contact.user_id;
@@ -54,6 +54,7 @@ import { config } from './common.js'
                 var p_end_time = $('#p-end-datetimepicker').data('DateTimePicker').date().unix();
                 var parent_id = config.GetURLParameter('parent_id');
                 var company_id = config.GetURLParameter('company_id');
+                var participant = $('#participant-select').val();
                 var data = {
                     project_id:this.project_id,
                     project_name:this.project_name,
@@ -65,6 +66,7 @@ import { config } from './common.js'
                     project_end_time:p_end_time,
                     company_id:company_id,
                     inherit_type:this.inherit_type,
+                    participant :JSON.stringify(participant),
                 }
                 if (parent_id) {
                     data.parent_id = parent_id 
@@ -80,6 +82,10 @@ import { config } from './common.js'
         }
         
     });
+    window.set_company_image = function(url){
+     
+        root.project_image = url;
+    };
 
         var default_time = moment().local();
         $('#p-create-datetimepicker').datetimepicker({

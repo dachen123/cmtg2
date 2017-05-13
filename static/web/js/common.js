@@ -32,7 +32,7 @@ config.parsebody = function(body,callback){
         return null
     }
     else{
-            alert('ok');
+            // alert('ok');
         if(callback){
             callback(body.result); 
         } 
