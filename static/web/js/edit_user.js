@@ -32,7 +32,7 @@ import UserItem from '../components/user_item.vue'
         },
         methods:{
             fetch_user_list:function(){
-                this.$http.get(config.server_domain+'/get_user_info_list',{})
+                this.$http.get('/get_user_info_list',{})
                     .then(function(res){
                         this.user_info_list = res.body.result.user_info_list
                     }) 

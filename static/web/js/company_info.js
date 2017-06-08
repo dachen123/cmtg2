@@ -44,7 +44,7 @@ import CompanyProjectItem from '../components/company_project_item.vue'
                 if (project_id){
                     data.project_id=project_id
                 }
-                this.$http.get(config.server_domain+'/get_project_list',{
+                this.$http.get('/get_project_list',{
                     params:data
                 })
                     .then(function(res){

@@ -3,22 +3,11 @@ var path = require('path')
 
 var CompressionWebpackPlugin = require('compression-webpack-plugin')
 module.exports = {
-    entry: {
-        create_index:'./static/web/js/create_index.js',
-        create_project:'./static/web/js/create_project.js',
-        create_company:'./static/web/js/create_company.js',
-        company_info:'./static/web/js/company_info.js',
-        create_index:'./static/web/js/create_index.js',
-        edit_project:'./static/web/js/edit_project.js',
-        edit_user:'./static/web/js/edit_user.js',
-        homepage:'./static/web/js/homepage.js',
-        line_chart:'./static/web/js/line_chart.js',
-        project_info:'./static/web/js/project_info.js',
-    },
+    entry: './static/web/js/create_index.js',
     output: {
         path: path.resolve(__dirname, './static/web/dist'),
         publicPath: '/static/web/dist/',
-        filename: '[name].js'
+        filename: 'create_index.js'
     },
     resolve: {
         extensions: ['.css', '.js', '.vue'],

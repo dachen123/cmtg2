@@ -32,13 +32,13 @@ import HomeCompanyItem from '../components/home_company_item.vue'
         },
         methods:{
             fetch_urgent_indicator:function(){
-                this.$http.get(config.server_domain+'/get_urgent_indicator',{})
+                this.$http.get('/get_urgent_indicator',{})
                     .then(function(res){
                         this.urgent_indicator_list = res.body.result.indicator_info_list
                     }) 
             }, 
             fetch_company_list:function(){
-                this.$http.get(config.server_domain+'/get_company_list',{})
+                this.$http.get('/get_company_list',{})
                     .then(function(res){
                         this.company_info_list = res.body.result.company_info_list
                     }) 

@@ -26,6 +26,15 @@
             },
             redirect_to_update:function(){
                 window.location.href=this.item.edit_addr; 
+            },
+            del_company:function(){
+                <!-- this.$http.post('/delete_company',{ -->
+                <!--     company_id:this.item.company_id -->
+                <!-- }).then(function(r){ -->
+                <!--     var result = config.parsebody(r.body); -->
+                <!--      -->
+                <!-- })  -->
+                 
             }
         },
         

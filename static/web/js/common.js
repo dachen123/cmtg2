@@ -141,6 +141,13 @@ $(function(){
     }
 
 
+    $('.sidebar').on('click','span[data-href_togger="click-togger"]',function(){
+        var _this_href = $(this).attr('data-tree_href');
+        if(_this_href){
+            window.location.href= _this_href;
+        }
+    });
+
 
 });
 

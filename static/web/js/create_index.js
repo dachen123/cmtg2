@@ -4,7 +4,7 @@ Vue.use(VueResource);
 
 
 import { config } from './common.js'
-// import CompanyProjectItem from '../components/company_project_item.vue'
+import IndicatorRuleItem from '../components/indicator_rule_item.vue'
 
 (function(global){
 
@@ -26,7 +26,16 @@ import { config } from './common.js'
             indicator_id:null,
             data_value:"",
             data_desc:"",
-            data_attachment:""
+            data_attachment:"",
+            rule_info_list:[],
+            rule_op:'create',
+            rule_id:"",
+            statistic_style:"raw",
+            expect_value:"",
+            compare_mode:"",
+            level:"",
+            check_time:"",
+
         },
         http:{
             emulateJSON: true,
@@ -38,11 +47,13 @@ import { config } from './common.js'
             this.indicator_id = config.GetURLParameter('indicator_id');
             if (this.indicator_id){
                 this.get_indicator_info();
+                this.fetch_rule_list();
             }
+
         },
-        // components:{
-        //     CompanyProjectItem
-        // },
+        components:{
+            IndicatorRuleItem,
+        },
         methods:{
             // fetch_project_list:function(){
             //     this.$http.get(config.server_domain+'/get_project_list',{})
@@ -96,7 +107,7 @@ import { config } from './common.js'
             
             },
             get_indicator_info:function(){
-                this.$http.get(config.server_domain+'/get_indicator_info',{
+                this.$http.get('/get_indicator_info',{
                     params:{
                         indicator_id:this.indicator_id
                     }
@@ -133,6 +144,81 @@ import { config } from './common.js'
             redirect_to_chart:function(){
                     window.location.href='/chart?project_id='+this.project_id+'&indicator_id='+this.indicator_id;
             
+            },
+            fetch_rule_list:function(){
+                this.$http.get('/get_rule_list',{params:{
+                    indicator_id:this.indicator_id
+                }})
+                    .then(function(res){
+                        console.log(res.body);
+                        var r = config.parsebody(res.body);
+                        if(r){
+                            this.rule_info_list = res.body.result.rule_info_list;
+                        }
+                    }) 
+            
+            },
+            show_add_rule_box:function(){
+                // var check_time = $('#rule-datetimepicker').data('DateTimePicker').date().unix(); 
+                // this.$http.post('/add_rule',{
+                //     indicator_id:this.indicator_id,
+                //     expect_value:this.expect_value,
+                //     check_time:check_time
+                // })
+                //     .then(function(res){
+                //         this.rule_info_list = res.body.result.rule_info_list
+                //     }) 
+                this.rule_op = 'create';
+                $('.table-add-item').toggle('fast');
+            },
+            post_rule_data:function(){
+                if(this.rule_op=='create'){
+                    var check_time = $('#rule-datetimepicker').data('DateTimePicker').date().unix(); 
+                    this.$http.post('/add_rule',{
+                        indicator_id:this.indicator_id,
+                        expect_value:this.expect_value,
+                        compare_mode:this.compare_mode,
+                        check_time:check_time
+                    })
+                        .then(function(res){
+                            console.log(res.body);
+                            var r = config.parsebody(res.body);
+                            if (r){
+                                $('.table-add-item').toggle('fast');
+                                this.fetch_rule_list();
+                                $('#manual-upload-success-tip').modal('show');
+                            }
+                        }) 
+                }else{
+                    var check_time = $('#rule-datetimepicker').data('DateTimePicker').date().unix(); 
+                    this.$http.post('/update_rule',{
+                        rule_id:this.rule_id,
+                        indicator_id:this.indicator_id,
+                        expect_value:this.expect_value,
+                        compare_mode:this.compare_mode,
+                        check_time:check_time
+                    })
+                        .then(function(res){
+                            console.log(res.body);
+                            var r = config.parsebody(res.body);
+                            if (r){
+                                $('.table-add-item').toggle('fast');
+                                this.fetch_rule_list();
+                                $('#manual-upload-success-tip').modal('show');
+                            }
+                        }) 
+                
+                
+                }
+            
+            },
+            get_child_rule_data:function(rule_info){
+                this.rule_op = 'update';
+                this.rule_id = rule_info.rule_id;
+                this.expect_value = rule_info.expect;
+                $('#rule-datetimepicker').data('DateTimePicker').date(moment.unix(rule_info.check_time));
+                $('.table-add-item').toggle('fast');
+
             }
         }
         

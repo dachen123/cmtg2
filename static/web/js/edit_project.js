@@ -27,7 +27,7 @@ import { config } from './common.js'
         },
         created:function(){
             this.project_id = config.GetURLParameter('project_id');
-            this.$http.get(config.server_domain+'/get_project_info',{
+            this.$http.get('/get_project_info',{
                 params:{
                     project_id:this.project_id
                 }
