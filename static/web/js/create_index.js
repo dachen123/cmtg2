@@ -142,7 +142,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                 }) 
             },
             redirect_to_chart:function(){
-                    window.location.href='/chart?project_id='+this.project_id+'&indicator_id='+this.indicator_id;
+                    window.location.href='/chart?project_id='+this.project_id+'&indicator_id='+this.indicator_id+'&period='+this.collect_period;
             
             },
             fetch_rule_list:function(){
