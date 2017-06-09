@@ -7,7 +7,9 @@
         <td>{{item.email}}</td>
         <td>普通</td>
         <td>{{item.company}}</td>
-        <td><button v-on:click="trans_data" class="btn btn-xs btn-primary" style="margin-right:5px;">编辑</button><button class="btn btn-xs btn-danger" >删除</button></td>
+        <td>
+            <button v-on:click="trans_data" class="btn btn-xs btn-primary" style="margin-right:5px;">编辑</button>
+            <button v-on:click="del_user"  class="btn btn-xs btn-danger" >删除</button></td>
     </tr>
 
     <!-- /.item -->
@@ -23,6 +25,9 @@
             },
             trans_data:function(){
                 this.$emit('trans_data',this.item); 
+            },
+            del_user:function(){
+                this.$emit('del_user',this.item); 
             }
             
 

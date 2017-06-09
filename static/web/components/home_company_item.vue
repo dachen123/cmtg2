@@ -3,7 +3,7 @@
         <img class="attachment-img" :src="item.company_image" alt="Attachment Image">
         <div class="attachment-pushed">
             <h4 class="attachment-heading"><a :href="item.home_addr">{{item.company_name}}</a>
-            <button class="btn btn-xs btn-danger pull-right">删除</button>
+            <button v-on:click="del_company" class="btn btn-xs btn-danger pull-right">删除</button>
             <button v-on:click="redirect_to_update" class="btn btn-xs btn-primary pull-right" style="margin-right:10px;">编辑</button>
 </h4>
 
@@ -28,13 +28,7 @@
                 window.location.href=this.item.edit_addr; 
             },
             del_company:function(){
-                <!-- this.$http.post('/delete_company',{ -->
-                <!--     company_id:this.item.company_id -->
-                <!-- }).then(function(r){ -->
-                <!--     var result = config.parsebody(r.body); -->
-                <!--      -->
-                <!-- })  -->
-                 
+                this.$emit('del_company',this.item); 
             }
         },
         

@@ -24,6 +24,10 @@ import UserItem from '../components/user_item.vue'
         data:{
             user_info_list:[] ,
         },
+        http:{
+            emulateJSON: true,
+            emulateHTTP: true
+        },
         created:function(){
             this.fetch_user_list()
         },
@@ -53,6 +57,14 @@ import UserItem from '../components/user_item.vue'
                     company:"",
                 }
                 eventBus.$emit('show_data',user_info,'create');
+            },
+            del_user:function(user){
+                this.$http.post('/delete_user',{
+                    user_id: user.user_id
+                })
+                    .then(function(res){
+                        this.fetch_user_list()
+                    }) 
             }
 
         }
@@ -114,7 +126,7 @@ import UserItem from '../components/user_item.vue'
                     }) 
                 
                 }
-            },
+            }
         
         },
         mounted:function(){

@@ -28,6 +28,10 @@ import CompanyProjectItem from '../components/company_project_item.vue'
             // leader_id:"",
             // contact_id:"",
         },
+        http:{
+            emulateJSON: true,
+            emulateHTTP: true
+        },
         created:function(){
             this.fetch_project_list()
         },
@@ -61,6 +65,14 @@ import CompanyProjectItem from '../components/company_project_item.vue'
                 }
 
                  
+            },
+            del_project:function(project){
+                this.$http.post('/delete_project',{
+                    project_id: project.project_id
+                })
+                    .then(function(res){
+                        this.fetch_project_list()
+                    }) 
             }
         }
         

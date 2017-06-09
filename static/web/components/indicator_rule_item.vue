@@ -8,7 +8,7 @@
         <td>{{item.expect}}</td>
         <td>
             <button v-on:click="trans_data" class="btn btn-xs btn-primary" style="margin-right:5px;">编辑</button>
-            <button class="btn btn-xs btn-danger" >删除</button>
+            <button v-on:click="del_rule" class="btn btn-xs btn-danger" >删除</button>
         </td>
     </tr>
 
@@ -23,6 +23,9 @@ export default {
         },
         trans_data:function(){
             this.$emit('trans_data',this.item); 
+        },
+        del_rule:function(){
+            this.$emit('del_rule',this.item); 
         }
     }
 

@@ -10,7 +10,9 @@
         </td>
         <!-- <td><span class="label label-success">{{item.status}}</span></td> -->
         <td><span class="label label-success">正常</span></td>
-        <td><button v-on:click="redirect_to_update" class="btn btn-xs btn-primary update-index-btn" style="margin-right:5px;">编辑</button><button class="btn btn-xs btn-danger" >删除</button></td>
+        <td>
+            <button v-on:click="redirect_to_update" class="btn btn-xs btn-primary update-index-btn" style="margin-right:5px;">编辑</button>
+            <button v-on:click="del_indicator" class="btn btn-xs btn-danger" >删除</button></td>
     </tr>
 
 </template>
@@ -24,6 +26,9 @@
             },
             redirect_to_update:function(){
                 window.location.href='/edit_indicator?indicator_id='+this.item.indicator_id+'&project_id='+this.item.project_id;
+            },
+            del_indicator:function(){
+                this.$emit('del_indicator',this.item); 
             }
         }
         

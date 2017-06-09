@@ -219,6 +219,15 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                 $('#rule-datetimepicker').data('DateTimePicker').date(moment.unix(rule_info.check_time));
                 $('.table-add-item').toggle('fast');
 
+            },
+            del_rule:function(rule){
+                this.$http.post('/delete_rule',{
+                    rule_id: rule.rule_id
+                })
+                    .then(function(res){
+                        this.fetch_rule_list()
+                    }) 
+            
             }
         }
         

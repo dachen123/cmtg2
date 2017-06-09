@@ -22,6 +22,10 @@ import HomeCompanyItem from '../components/home_company_item.vue'
             urgent_indicator_list:[] ,
             company_info_list:[] 
         },
+        http:{
+            emulateJSON: true,
+            emulateHTTP: true
+        },
         created:function(){
             this.fetch_urgent_indicator()
             this.fetch_company_list()
@@ -42,7 +46,16 @@ import HomeCompanyItem from '../components/home_company_item.vue'
                     .then(function(res){
                         this.company_info_list = res.body.result.company_info_list
                     }) 
-            } 
+            },
+            del_company:function(company){
+                this.$http.post('/delete_company',{
+                    company_id: company.company_id
+                })
+                    .then(function(res){
+                        this.fetch_company_list()
+                    }) 
+            
+            }
         }
         
     });

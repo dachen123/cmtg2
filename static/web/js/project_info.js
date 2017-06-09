@@ -25,6 +25,10 @@ import ProjectIndicatorItem from '../components/project_indicator_item.vue'
             project_id:null,
             company_id:null
         },
+        http:{
+            emulateJSON: true,
+            emulateHTTP: true
+        },
         created:function(){
             this.fetch_project_list()
             this.fetch_indicator_list()
@@ -63,6 +67,22 @@ import ProjectIndicatorItem from '../components/project_indicator_item.vue'
             redirect_to_create:function(){
                 window.location.href="/create_project?company_id="+this.company_id+"&parent_id="+this.project_id;
             
+            },
+            del_project:function(project){
+                this.$http.post('/delete_project',{
+                    project_id: project.project_id
+                })
+                    .then(function(res){
+                        this.fetch_project_list()
+                    }) 
+            },
+            del_indicator:function(indicator){
+                this.$http.post('/delete_indicator',{
+                    indicator_id: indicator.indicator_id
+                })
+                    .then(function(res){
+                        this.fetch_indicator_list()
+                    }) 
             }
         }
         
