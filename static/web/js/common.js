@@ -151,6 +151,36 @@ $(function(){
 
 });
 
+
+// var messageControl = {
+//     init    :function(){
+//     },
+//     get_message:function(){
+//         var _m = this;
+// 	    $.ajax({
+// 	    	cache:false,
+// 	    	type:'GET',
+// 	    	url:'/get_message_list',
+// 	    	dataType:"json",
+//             data:{},
+// 	    	success:function(json){
+//                 config.parsebody(json.result,_m.show_message);
+// 	    	},
+// 	    	error:function(){
+//                 alert('网络错误，请重试!');
+// 	    	}
+// 	    });
+//     },
+//     show_message:function(data){
+//         var m_li = '<li><a href="#"><i class="fa fa-reply text-aqua">'\
+//             +'</i>xxx做了xxx 
+//                    <button class="btn btn-xs btn-info pull-right">确认已读</button>
+//                     </a>
+//                </li>'
+//     
+//     }
+// }
+
 export {
     config,
     init_upload_crop_pic_model,

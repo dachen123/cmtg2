@@ -1,9 +1,9 @@
 <template>
     <tr :id="id_string(item.rule_id)">
-        <td><a href="#">累积值</a></td>
+        <td><a href="#">{{statistic_style[item.statistic_style]}}</a></td>
         <td>预期值比</td>
         <td>
-            等于
+            {{compare_mode[item.compare_mode]}}
         </td>
         <td>{{item.expect}}</td>
         <td>
@@ -17,6 +17,24 @@
 <script>
 export default {
     props:['item','index'],
+    data:function(){
+        return{
+            statistic_style:{
+                raw:"原始值",
+                accumulate:"累计值",
+                mean      :"算术平均",
+                linkrelative:"环比"
+            },
+            compare_mode:{
+                higher:"高于",
+                lower:"低于",
+                equal: "等于",
+                nothigher:"不高于",
+                notlower:"不低于",
+                notequal:"不等于"
+            }
+        }
+    },
     methods:{
         id_string:function(id){
             return "rule-"+id
