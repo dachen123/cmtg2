@@ -1,7 +1,7 @@
 <template>
     <tr :id="id_string(item.rule_id)">
         <td><a href="#">{{statistic_style[item.statistic_style]}}</a></td>
-        <td>预期值比</td>
+        <td>{{compare_target[item.compare_target]}}</td>
         <td>
             {{compare_mode[item.compare_mode]}}
         </td>
@@ -32,6 +32,10 @@ export default {
                 nothigher:"不高于",
                 notlower:"不低于",
                 notequal:"不等于"
+            },
+            compare_target:{
+                expect_value:"预期值比",
+                indicator:"其他指标比"
             }
         }
     },

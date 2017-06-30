@@ -15,6 +15,7 @@ module.exports = {
         line_chart:'./static/web/js/line_chart.js',
         project_info:'./static/web/js/project_info.js',
         event_list:'./static/web/js/event_list.js',
+        upload_excel:'./static/web/js/upload_excel.js',
     },
     output: {
         path: path.resolve(__dirname, './static/web/dist'),

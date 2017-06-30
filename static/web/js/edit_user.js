@@ -137,7 +137,7 @@ import UserItem from '../components/user_item.vue'
                 this.image = user_info.image;
                 this.job_level = user_info.job_level;
                 this.job_role = user_info.job_role;
-                // this.phone = user_info.phone;
+                this.phone = user_info.phone;
                 this.sex = user_info.sex;
                 this.email = user_info.email;
                 $('#add-new-user').modal('show');
@@ -150,6 +150,50 @@ import UserItem from '../components/user_item.vue'
         modal.image = url;
     };
 
+    // window.onload = function(){
+        $('#member-superior-tree').tree({
+            dragAndDrop: true,
+            autoOpen:true
+        }); 
+
+        $('#trigger-member-superior-tree').on('click',function(){
+            $.ajax({
+                type:"GET",
+                url:'/get_user_superior_tree',
+                data:{},
+                success:function(json){
+                    $('#member-superior-tree').tree('loadData',json.result.user_superior);
+                    $('#set-member-superior-modal').modal('show');
+                },
+                error: function () {
+                    console.log('net error');
+                }
+            });
+        });
+        $('#save-member-superior-btn').on('click',function(){
+            var user_superior = $('#member-superior-tree').tree('toJson');
+            $.ajax({
+                type:"POST",
+                url:'/save_user_superior_tree',
+                data:{
+                    user_superior:user_superior
+                },
+                success:function(json){
+                    config.parsebody(json,function(){
+                        alert("保存成功!");
+                        $('#set-member-superior-modal').modal('hide');
+                    });
+                },
+                error: function () {
+                    console.log('net error');
+                }
+            });
+
+        });
+        $('#cancel-oprate').on('click',function(){
+            $('#set-member-superior-modal').modal('hide');
+        });
+    // }
 
 })(this);
 

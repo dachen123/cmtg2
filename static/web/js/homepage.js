@@ -9,6 +9,7 @@ import HomeUrgentIndicator from '../components/home_urgent_indicator.vue'
 import HomeCompanyItem from '../components/home_company_item.vue'
 import HomeTmAeventItem from '../components/home_tm_aevent.vue'
 import HomeFmAeventItem from '../components/home_fm_aevent.vue'
+import HomeLpmItem from '../components/home_latest_pm.vue'
 
 (function(global){
 
@@ -24,7 +25,8 @@ import HomeFmAeventItem from '../components/home_fm_aevent.vue'
             urgent_indicator_list:[] ,
             company_info_list:[],
             to_me_aevents:[],
-            from_me_aevents:[]
+            from_me_aevents:[],
+            project_info_list:[]
         },
         http:{
             emulateJSON: true,
@@ -35,16 +37,18 @@ import HomeFmAeventItem from '../components/home_fm_aevent.vue'
             this.fetch_company_list()
             this.fetch_to_me_verify_aevent()
             this.fetch_from_me_verify_aevent()
+            this.fetch_my_project_list()
         },
         components:{
             HomeUrgentIndicator,
             HomeCompanyItem,
             HomeTmAeventItem,
             HomeFmAeventItem,
+            HomeLpmItem
         },
         methods:{
             fetch_urgent_indicator:function(){
-                this.$http.get('/get_urgent_indicator',{})
+                this.$http.get('/get_unsolved_indicator',{})
                     .then(function(res){
                         this.urgent_indicator_list = res.body.result.indicator_info_list
                     }) 
@@ -53,6 +57,12 @@ import HomeFmAeventItem from '../components/home_fm_aevent.vue'
                 this.$http.get('/get_company_list',{})
                     .then(function(res){
                         this.company_info_list = res.body.result.company_info_list
+                    }) 
+            },
+            fetch_my_project_list:function(){
+                this.$http.get('/get_my_project_list',{})
+                    .then(function(res){
+                        this.project_info_list = res.body.result.project_info_list
                     }) 
             },
             fetch_to_me_verify_aevent:function(){
@@ -220,10 +230,11 @@ import HomeFmAeventItem from '../components/home_fm_aevent.vue'
                   +'<td>'+e.project_name+'</td>'
                   +'<td>'+e.indicator_name+'</td>'
                   +'<td>'+e.data+'</td>'
-                  +'<td>'+e.timestamp+'</td>'
-                  +'<td>'+e.oprator+'</td>'
-             if(e.proof){
-                  tr_str += '<td><button class="btn btn-danger btn-xs">查看证据</button></td></tr>'
+                  +'<td>'+moment.unix(e.timestamp).format("YYYY-MM-DD")+'</td>'
+                  +'<td>'+e.operator+'</td>'
+             if(e.proof.length > 0){
+                  tr_str += '<td data-proof='+ JSON.stringify(e.proof)
+                      +'><button class="btn btn-danger btn-xs show-data-proof">查看证据</button></td></tr>'
              }else{
                   tr_str += '<td><label class="label label-success label-xs">无证据</label></td></tr>'
              }
@@ -232,6 +243,19 @@ import HomeFmAeventItem from '../components/home_fm_aevent.vue'
         data_verify_table.rows.add($(tr_str)).draw();
         get_filter_select_value();
     }
+
+    $('#data-verify-table').on('click','.show-data-proof',function(){
+        var proof_str = $(this).parents('td').attr('data-proof');
+        var proof_list = JSON.parse(proof_str);
+        $('#data-proof-list-ul').empty();
+        for(var index in proof_list){
+            var p = proof_list[index];
+            $('#data-proof-list-ul').append('<li><a href="'+p
+                    +'">'+p.split('/').pop()
+                    +'</a></li>'); 
+        }
+        $('#data-proof-modal').modal('show');
+    });
 
     function get_filter_select_value(){
         data_verify_table.columns().eq(0).each( function ( index ) {
@@ -259,6 +283,7 @@ import HomeFmAeventItem from '../components/home_fm_aevent.vue'
     }
 
     function verify_indicator_data(data_list,isok='true'){
+        $('#verify-data-box .overlay').show();
         function delete_rows(){
             var rows = data_verify_table.rows({ 'search': 'applied'}).nodes();
             data_verify_table.$('input[type="checkbox"]').each(function(){
@@ -280,9 +305,11 @@ import HomeFmAeventItem from '../components/home_fm_aevent.vue'
             },
 	    	success:function(json){
                 config.parsebody(json,delete_rows);
+                $('#verify-data-box .overlay').hide();
 	    	},
 	    	error:function(){
                 alert('网络错误，请重试!');
+                $('#verify-data-box .overlay').hide();
 	    	}
 	    });
     
@@ -301,9 +328,6 @@ import HomeFmAeventItem from '../components/home_fm_aevent.vue'
         }
 
     });
-
-
-
 
 })(this);
 

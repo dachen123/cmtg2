@@ -17,6 +17,7 @@ import { config } from './common.js'
             project_desc:"",
             leader_id:"",
             contact_id:"",
+            project_type:'default',
             inherit_type:"no",
         },
         http:{
@@ -38,6 +39,7 @@ import { config } from './common.js'
                     project_name:this.project_name,
                     project_image:this.project_image,
                     project_desc:this.project_desc,
+                    project_type:this.project_type,
                     leader_id:this.leader_id,
                     contact_id:this.contact_id,
                     project_create_time:p_create_time,
@@ -53,6 +55,7 @@ import { config } from './common.js'
                 ).then(function(r){
                     console.log(r.body);
                     var result = config.parsebody(r.body);
+                    // localStorage.removeItem('sidebar_current_content');
                     window.location.href = result.project_info.home_addr;
                     
                 }) 

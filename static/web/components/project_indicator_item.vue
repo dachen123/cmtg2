@@ -1,6 +1,6 @@
 <template>
     <tr :id="id_string(item.indicator_id)">
-        <td><a :href="item.chart_addr">{{item.indicator_name}}</a></td>
+        <td style="max-width:250px;"><a :href="item.chart_addr">{{item.indicator_name}}</a></td>
         <td>{{item.forum.name}}</td>
         <!-- <td> -->
         <!--     {{item.statistics_method}} -->

@@ -33,7 +33,7 @@ import { config } from './common.js'
         },
         mounted: function() {
             // this.fillData();
-            this.get_indicator_table_list();
+            // this.get_indicator_table_list();
         },
         methods: {
             fillData: function() {
