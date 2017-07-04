@@ -282,7 +282,7 @@ import HomeLpmItem from '../components/home_latest_pm.vue'
     
     }
 
-    function verify_indicator_data(data_list,isok='true'){
+    function verify_indicator_data(isok='true'){
         $('#verify-data-box .overlay').show();
         function delete_rows(){
             var rows = data_verify_table.rows({ 'search': 'applied'}).nodes();
@@ -292,7 +292,7 @@ import HomeLpmItem from '../components/home_latest_pm.vue'
                }
             });
             get_filter_select_value();
-
+            data_list=[];
         };
 	    $.ajax({
 	    	cache:false,
@@ -300,7 +300,7 @@ import HomeLpmItem from '../components/home_latest_pm.vue'
 	    	url:'/verify_indicator_data',
 	    	dataType:"json",
             data:{
-                'data_list':data_list,
+                'data_list':JSON.stringify(data_list),
                 'isok'     :isok
             },
 	    	success:function(json){
@@ -317,14 +317,14 @@ import HomeLpmItem from '../components/home_latest_pm.vue'
 
     $('#data-verify-table_wrapper #verify_pass').on('click',function(){
         if(confirm('确认通过？')){
-            verify_indicator_data(JSON.stringify(data_list),'true'); 
+            verify_indicator_data('true'); 
         }
 
     });
 
     $('#data-verify-table_wrapper #verify_reject').on('click',function(){
         if(confirm('确认驳回？')){
-            verify_indicator_data(JSON.stringify(data_list),'false'); 
+            verify_indicator_data('false'); 
         }
 
     });

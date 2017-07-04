@@ -222,6 +222,7 @@ import IndicatorItem from '../components/indicator_transplant_item.vue'
                     .then(function(res){
                         if(res.body.error_code=='OK'){
                             alert('上传成功!');
+                            window.location.href=window.location.href;
                         } 
                     })
             },

@@ -5,10 +5,10 @@
         </td>
         <td>
             <select v-model="item.indicator_property" class="form-control input-sm">
-                <option value="int">整型</option>
-                <option value="float">浮点</option>
-                <option value="string">字符串</option>
-                <option value="boolean">布尔</option>
+                <option value="integer">整数</option>
+                <option value="float">小数</option>
+                <option value="string">文本</option>
+                <option value="boolean">真假</option>
             </select>
         </td>
         <td>

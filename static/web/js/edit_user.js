@@ -83,8 +83,11 @@ import UserItem from '../components/user_item.vue'
             sex  :"male",
             email:"",
             company:"",
-            oprate:'create'
-
+            oprate:'create',
+            set_password:'true',
+            user_password:"",
+            confirm_user_password:"",
+            error_msg:""
         },
         http:{
             emulateJSON: true,
@@ -92,6 +95,29 @@ import UserItem from '../components/user_item.vue'
         },
         created:function(){
         
+        },
+        watch:{
+            set_password:function(val){
+                if (val == 'true'){
+                    $('#user-password-div').show(); 
+                    $('#confirm-user-password-div').show();
+                }else{
+                    $('#user-password-div').hide(); 
+                    $('#confirm-user-password-div').hide();
+                }
+                 
+            },
+            oprate:function(val){
+                if (val=='create'){
+                    $('#set-new-password-div').hide();
+                    this.set_password = 'true';
+                }
+                else{
+                
+                    $('#set-new-password-div').show();
+                    this.set_password = 'false';
+                }
+            }
         },
         methods:{
             post_data:function(){
@@ -103,8 +129,14 @@ import UserItem from '../components/user_item.vue'
                     sex       :this.sex,
                     phone     :this.phone,
                     email     :this.email,
+                    set_password:this.set_password,
+                    user_password:hex_md5(this.user_password),
                 }
                 if(this.oprate=='create'){
+                    if (this.user_password != this.confirm_user_password){
+                        this.error_msg='两次输入的密码不一致';
+                        return ;
+                    }
                     this.$http.post('/create_user',data
                             ).then(function(r){
                         console.log(r.body);
@@ -116,6 +148,12 @@ import UserItem from '../components/user_item.vue'
                 }
                 else {
                     data.user_id = this.user_id;
+                    if(this.set_password == 'true'){
+                        if (this.user_password != this.confirm_user_password){
+                            this.error_msg='两次输入的密码不一致';
+                            return ;
+                        }
+                    }
                     this.$http.post('/update_user',data
                             ).then(function(r){
                         console.log(r.body);

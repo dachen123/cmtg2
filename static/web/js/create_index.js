@@ -25,6 +25,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             project_id:"",
             indicator_id:null,
             data_value:"",
+            data_bool_value:'1',
             data_desc:"",
             data_attachment:"",
             rule_info_list:[],
@@ -89,6 +90,15 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                 }else{
                     $('#rule-datetimepicker').show();
                 } 
+            },
+            indicator_property:function(val){
+                if (val=='boolean'){
+                    $('#input-index-data-div').hide(); 
+                    $('#input-index-bool-data-div').show(); 
+                }else{
+                    $('#input-index-data-div').show(); 
+                    $('#input-index-bool-data-div').hide(); 
+                }
             }
         },
         methods:{
@@ -197,10 +207,16 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             },
             post_i_data_by_manual:function(){
                 var data_time = $('#i-data-datetimepicker').data('DateTimePicker').date().unix();
+                var data_value = null;
+                if(this.indicator_property == 'boolean'){
+                    data_value=this.data_bool_value; 
+                }else{
+                    data_value=this.data_value; 
+                }
                 this.$http.post('/post_i_data_by_manual',{
                     indicator_id: this.indicator_id,
                     project_id  : this.project_id,
-                    data_value : this.data_value,
+                    data_value : data_value,
                     data_desc  : this.data_desc,
                     data_time   : data_time,
                     data_attachment: this.data_attachment
@@ -602,9 +618,15 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             var file = files[i]; 
             formData.append('file[]',file,file.name);
         }
+        var data_value = null;
+        if(root.indicator_property == 'boolean'){
+            data_value=root.data_bool_value; 
+        }else{
+            data_value=root.data_value; 
+        }
         formData.append('indicator_id',root.indicator_id);
         formData.append('project_id',root.project_id);
-        formData.append('data_value',root.data_value);
+        formData.append('data_value',data_value);
         formData.append('data_time',data_time);
         $.ajax('/post_i_data_by_manual', {
             method: "POST",

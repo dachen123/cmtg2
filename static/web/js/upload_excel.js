@@ -47,6 +47,7 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
                 this.indicator_list = data.indicator_list; 
             },
             batch_import_indicator(){
+                $('#excel-import-indicator .overlay').show();
                 var child_list = this.$refs;
                 var indicator_list = [];
                 for( var index in child_list.index){
@@ -64,7 +65,14 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
                     indicator_list:JSON.stringify(indicator_list)
                 })
                     .then(function(r){
-                        alert('创建指标成功!');
+                        if (r.body.error_code == 'OK'){
+                            alert('创建指标成功!');
+                        }
+                        else{
+                            alert(JSON.stringify(r.body.message));
+                        }
+                        $('#excel-import-indicator .overlay').hide();
+                        window.location.href=window.location.href;
                     })
             }
         }
@@ -77,10 +85,12 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
             numFiles = input.get(0).files ? input.get(0).files.length : 1,
             label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
         $('#indicator-excel-name').val(label);
+        var indicator_position = $('#indicator-name-position').val();
         var formData = new FormData();
         
         formData.append('file', input.get(0).files[0]);
         formData.append('project_id', root.project_id);
+        formData.append('indicator_position', indicator_position);
 
         $.ajax('/parse_excel_indicator', {
             method: "POST",
@@ -126,11 +136,13 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
         var formData = new FormData();
         var data_time = $('#i-data-datetimepicker').data('DateTimePicker').date().unix();
         var sheet_num = $('#upload_sheet_num').val();
+        var indicator_position = $('#i-name-position').val();
         
         formData.append('file', input.get(0).files[0]);
         formData.append('project_id', root.project_id);
         formData.append('data_time', data_time);
         formData.append('sheet_num', sheet_num);
+        formData.append('indicator_position', indicator_position);
 
         $.ajax('/parse_excel_indicator_data', {
             method: "POST",

@@ -45,6 +45,11 @@
                 my_table:this.table
             }
         },
+        watch:{
+            table:function(){
+                this.my_table = this.table; 
+            }
+        },
         methods:{
             id_string:function(id){
                 return "indicator-"+id
