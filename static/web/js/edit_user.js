@@ -50,8 +50,8 @@ import UserItem from '../components/user_item.vue'
                     user_name:"",
                     image:"",
                     sex:"male",
-                    job_level:"",
-                    job_role:"",
+                    job_level:"manager",
+                    job_role:"invest",
                     phone:"",
                     email:"",
                     company:"",
@@ -76,8 +76,8 @@ import UserItem from '../components/user_item.vue'
         data:{
             user_id:"",
             user_name:"",
-            job_level:"",
-            job_role:"",
+            job_level:"manager",
+            job_role:"invest",
             image:"",
             phone:"",
             sex  :"male",
@@ -117,10 +117,61 @@ import UserItem from '../components/user_item.vue'
                     $('#set-new-password-div').show();
                     this.set_password = 'false';
                 }
+            },
+            job_level:function(val){
+                if(val == 'admin'){
+                    $('#job-role-select option').attr('disabled','disabled');
+                    $('#job-role-select option[value="none"]').removeAttr('disabled');
+                    this.job_role="none";
+                }else if(val == 'partner'){
+                    $('#job-role-select option').attr('disabled','disabled');
+                    $('#job-role-select option[value="all"]').removeAttr('disabled');
+                    $('#job-role-select option[value="financial"]').removeAttr('disabled');
+                    $('#job-role-select option[value="legal"]').removeAttr('disabled');
+                    $('#job-role-select option[value="invest"]').removeAttr('disabled');
+                    this.job_role="all";
+                }else if(val == 'director'){
+                    $('#job-role-select option').attr('disabled','disabled');
+                    $('#job-role-select option[value="financial"]').removeAttr('disabled');
+                    $('#job-role-select option[value="legal"]').removeAttr('disabled');
+                    $('#job-role-select option[value="invest"]').removeAttr('disabled');
+                    this.job_role="invest";
+                
+                }else if(val == 'manager'){
+                    $('#job-role-select option').attr('disabled','disabled');
+                    $('#job-role-select option[value="financial"]').removeAttr('disabled');
+                    $('#job-role-select option[value="legal"]').removeAttr('disabled');
+                    $('#job-role-select option[value="invest"]').removeAttr('disabled');
+                    this.job_role="invest";
+                }else if(val == 'master'){
+                    $('#job-role-select option').attr('disabled','disabled');
+                    $('#job-role-select option[value="input_master"]').removeAttr('disabled');
+                    this.job_role="input_master";
+                }else if(val == 'clerk'){
+                    $('#job-role-select option').attr('disabled','disabled');
+                    $('#job-role-select option[value="input_account"]').removeAttr('disabled');
+                    this.job_role="input_account";
+                }
+            
             }
         },
         methods:{
+            validate_input:function(){
+                var notNull = true;
+                var _m = this;
+                $('#add-new-user input[required]').each(function(){
+                    if($.AdminLTE.utils.isNull($(this).val())){
+                        notNull = false;  
+                        $(this).addClass('validate-alert');
+                        _m.error_msg = $(this).attr('data-error_msg');
+                    }
+                }); 
+                return notNull;
+            },
             post_data:function(){
+                if(!this.validate_input()){
+                    return ;
+                }
                 var data = {
                     user_name :this.user_name,
                     job_level :this.job_level,
@@ -169,6 +220,7 @@ import UserItem from '../components/user_item.vue'
         },
         mounted:function(){
             eventBus.$on('show_data',function(user_info,op){
+                this.error_msg = "";
                 this.oprate = op;
                 this.user_id = user_info.user_id;
                 this.user_name = user_info.name;
@@ -179,6 +231,9 @@ import UserItem from '../components/user_item.vue'
                 this.sex = user_info.sex;
                 this.email = user_info.email;
                 $('#add-new-user').modal('show');
+                $('#add-new-user input.validate-alert').each(function(){
+                    $(this).removeClass('validate-alert');
+                });
             }.bind(this)); 
         }
         
