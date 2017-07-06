@@ -5,6 +5,12 @@
          <td>{{item.indicator.indicator_name}}</td>
          <td>{{format_time(item.event_time)}}</td>
          <td><span class="label label-success">{{item.level}}</span></td>
+         <td>
+             <span v-if="item.status==='unsend'" class="label label-primary">未解决</span>
+             <span v-else-if="item.status==='unsolved'" class="label label-primary">未解决</span>
+             <span v-else-if="item.status==='unverified'" class="label label-danger">待审核</span>
+             <span v-else-if="item.status==='solved'" class="label label-success">已解决</span>
+         </td>
      </tr>
 </template>
 
