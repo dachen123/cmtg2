@@ -42,6 +42,8 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             compare_target:"expect_value",
             rule_start_index:1,
             rule_count:10,
+            compute_indicator_expression:"",
+            is_compute_indicator:"false"
         },
         http:{
             emulateJSON: true,
@@ -124,6 +126,8 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                 }) 
             },
             post_data:function(){
+                this.check_compute_indicator_expression();
+                return;
                 if (this.indicator_id){
                     this.update_indicator();
                 
@@ -416,6 +420,13 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                         this.fetch_rule_list()
                     }) 
             
+            },
+            check_compute_indicator_expression:function(){
+                var expression = this.compute_indicator_expression.replace(/\s+/g,'');
+                console.log(expression);
+                var i_name_list = expression.match(/[^.,<>+\-*/()[\]{}^&|%0-9]+/g);
+                console.log(i_name_list);
+                 
             }
         }
         
@@ -645,6 +656,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
     function post_handler(e){
     
     }
+
 
 })(this);
 
