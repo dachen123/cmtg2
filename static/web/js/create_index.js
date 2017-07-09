@@ -43,7 +43,10 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             rule_start_index:1,
             rule_count:10,
             compute_indicator_expression:"",
-            is_compute_indicator:"false"
+            compute_i_expression:"",
+            is_compute_indicator:"false",
+            indicator_map:{},
+            indicator_map_reverse:{},
         },
         http:{
             emulateJSON: true,
@@ -53,8 +56,11 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             // this.fetch_project_list()
             this.project_id = config.GetURLParameter('project_id');
             this.indicator_id = config.GetURLParameter('indicator_id');
+            var _m = this;
             if (this.indicator_id){
-                this.get_indicator_info();
+                this.get_indicator_list_for_map(function(){
+                    _m.get_indicator_info();
+                });
                 this.fetch_rule_list();
             }
 
@@ -101,6 +107,13 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                     $('#input-index-data-div').show(); 
                     $('#input-index-bool-data-div').hide(); 
                 }
+            },
+            is_compute_indicator:function(val){
+                if(val == 'true'){
+                    $('#compute_indicator_region').show();
+                }else{
+                    $('#compute_indicator_region').hide();
+                }
             }
         },
         methods:{
@@ -110,15 +123,39 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             //             this.project_info_list = res.body.result.project_info_list
             //         }) 
             // }
+            get_indicator_list_for_map:function(callback){
+                var _m = this;
+                this.$http.get('/get_indicator_list_by_condition',{
+                    params:{
+                        project_id:this.project_id
+                    }
+                }).then(function(r){
+                    r = config.parsebody(r.body,function(result){
+                        for(var index in result.indicator_info_list){
+                            var indicator = result.indicator_info_list[index];
+                            _m.indicator_map[indicator.indicator_name] = indicator.indicator_id;
+                            _m.indicator_map_reverse[indicator.indicator_id.toString()] = indicator.indicator_name;
+                        }
+                        callback&&callback();
+                    })
+                })
+            },
             add_index: function(){
-                this.$http.post('/create_indicator',{
+                var data = {
                     read_interface:this.read_interface,
                     indicator_name:this.indicator_name,
                     indicator_property:this.indicator_property,
                     project_id:this.project_id,
                     forum:this.forum,
-                    collect_period:this.collect_period
-                }).then(function(r){
+                    collect_period:this.collect_period,
+                    is_compute_indicator:this.is_compute_indicator
+
+                }
+                if(this.is_compute_indicator == 'true'){
+                    data['compute_expression'] = this.compute_i_expression;
+                }
+                this.$http.post('/create_indicator',data
+                ).then(function(r){
                     console.log(r.body);
                     this.indicator_id=r.body.result.indicator_info.indicator_id;
                     // localStorage.removeItem('sidebar_current_content');
@@ -126,8 +163,11 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                 }) 
             },
             post_data:function(){
-                this.check_compute_indicator_expression();
-                return;
+                if(this.is_compute_indicator == 'true'){
+                    if(!this.check_compute_indicator_expression()){
+                        return;
+                    }
+                }
                 if (this.indicator_id){
                     this.update_indicator();
                 
@@ -137,25 +177,33 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                 }
             },
             update_indicator:function(){
-                this.$http.post('/update_indicator',{
+                var data = {
                     indicator_id:this.indicator_id,
                     read_interface:this.read_interface,
                     indicator_name:this.indicator_name,
                     indicator_property:this.indicator_property,
                     project_id:this.project_id,
                     forum:this.forum,
-                    collect_period:this.collect_period
-                }).then(function(r){
+                    collect_period:this.collect_period,
+                    is_compute_indicator:this.is_compute_indicator
+                }
+                if(this.is_compute_indicator == 'true'){
+                    data['compute_expression'] = this.compute_i_expression;
+                }
+                this.$http.post('/update_indicator',data
+                ).then(function(r){
                     console.log(r.body);
                     // this.indicator_id=r.body.result.indicator_info.indicator_id;
                     // window.location.href='/edit_indicator?project_id='+this.project_id+'&indicator_id='+this.indicator_id;
                     // localStorage.removeItem('sidebar_current_content');
                     var indicator_info = r.body.result.indicator_info;
                     this.read_interface=indicator_info.read_interface;
-                    this.indicator_name=indicator_info.indicator_name,
-                    this.indicator_property=indicator_info.indicator_property,
-                    this.forum=indicator_info.forum,
-                    this.collect_period=indicator_info.collect_period
+                    this.indicator_name=indicator_info.indicator_name;
+                    this.indicator_property=indicator_info.indicator_property;
+                    this.forum=indicator_info.forum.board_id;
+                    this.collect_period=indicator_info.collect_period;
+                    alert('修改成功');
+
                 }) 
             
             },
@@ -204,10 +252,22 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                     this.indicator_name=indicator_info.indicator_name,
                     this.indicator_property=indicator_info.indicator_property,
                     this.forum=indicator_info.forum.board_id,
-                    this.collect_period=indicator_info.collect_period
+                    this.collect_period=indicator_info.collect_period,
+                    this.is_compute_indicator=indicator_info.is_compute_indicator,
+                    this.set_expression_to_unicode(indicator_info.compute_expression);
                 
                 });
             
+            },
+            set_expression_to_unicode:function(e){
+                var i_id_list = e.match(/[i0-9]+/g);
+                for( var index in i_id_list){
+                    var i_id_str = i_id_list[index].replace(/i/g,'');
+                    var i_name = this.indicator_map_reverse[i_id_str];
+                    e = e.replace(eval('/'+i_id_list[index]+'/'),i_name);
+                }
+                this.compute_indicator_expression = e;
+
             },
             post_i_data_by_manual:function(){
                 var data_time = $('#i-data-datetimepicker').data('DateTimePicker').date().unix();
@@ -426,7 +486,18 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                 console.log(expression);
                 var i_name_list = expression.match(/[^.,<>+\-*/()[\]{}^&|%0-9]+/g);
                 console.log(i_name_list);
-                 
+                for (var index in i_name_list){
+                    var i_name = i_name_list[index]; 
+                    var i_id = this.indicator_map[i_name];
+                    if(!i_id){
+                        alert('找不到指标名'+i_name);
+                        return false;
+                    }
+                    expression = expression.replace(eval("/"+i_name+"/g"),'i'+i_id);
+                }
+                this.compute_i_expression = expression;
+                console.log(this.compute_i_expression);
+                return true;
             }
         }
         
