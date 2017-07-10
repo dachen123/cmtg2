@@ -273,11 +273,17 @@ import IndicatorItem from '../components/indicator_transplant_item.vue'
                     }) 
             },
             del_indicator:function(indicator){
+                if(!confirm('确认删除指标？')){
+                    return;
+                }
+                var _m = this;
                 this.$http.post('/delete_indicator',{
                     indicator_id: indicator.indicator_id
                 })
                     .then(function(res){
-                        this.fetch_indicator_list()
+                        var r = config.parsebody(res.body,function(result){
+                            _m.fetch_indicator_list()
+                        });
                     }) 
             },
             redirect_to_excel_upload:function(){
