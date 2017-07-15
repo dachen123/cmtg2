@@ -23,22 +23,37 @@ import UserItem from '../components/user_item.vue'
         el:'#user-list-root',
         data:{
             user_info_list:[] ,
+            other_company_user:[],
         },
         http:{
             emulateJSON: true,
             emulateHTTP: true
         },
         created:function(){
-            this.fetch_user_list()
+            this.get_my_company_user()
         },
         components:{
             UserItem
         },
         methods:{
-            fetch_user_list:function(){
-                this.$http.get('/get_user_info_list',{})
+            get_my_company_user:function(){
+                this.$http.get('/get_user_info_list',{
+                    params:{
+                        classify:'my_company' 
+                    }
+                })
                     .then(function(res){
                         this.user_info_list = res.body.result.user_info_list
+                    }) 
+            },
+            get_other_company_user:function(){
+                this.$http.get('/get_user_info_list',{
+                    params:{
+                        classify:'other_company' 
+                    }
+                })
+                    .then(function(res){
+                        this.other_company_user = res.body.result.user_info_list
                     }) 
             },
             get_child_data:function(user_info){

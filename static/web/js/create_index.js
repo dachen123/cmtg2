@@ -289,10 +289,17 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             set_expression_to_unicode:function(e){
                 if(e && !(e.length == 0)){
                     var i_id_list = e.match(/i\d+/g);
+                    var a_id_list = e.match(/a\d+/g);
                     for( var index in i_id_list){
                         var i_id_str = i_id_list[index].replace(/i/g,'');
                         var i_name = this.indicator_map_reverse[i_id_str];
                         e = e.replace(eval('/'+i_id_list[index]+'/'),i_name);
+                    }
+                    for(var index in a_id_list){
+                        var a_id_str = a_id_list[index].replace(/a/g,'');
+                        var a_name = this.indicator_map_reverse[a_id_str];
+                        e = e.replace(eval('/'+a_id_list[index]+'/'),a_name+'年初余额');
+                    
                     }
                 }
                 this.compute_indicator_expression = e;
@@ -521,11 +528,21 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                 for (var index in i_name_list){
                     var i_name = i_name_list[index]; 
                     var i_id = this.indicator_map[i_name];
-                    if(!i_id){
+                    if(i_id){
+                        expression = expression.replace(eval("/"+i_name+"/g"),'i'+i_id);
+                    }else if( i_name.search('年初余额') > 0){
+                        var sub_i_name = i_name.replace('年初余额','');
+                        i_id = this.indicator_map[sub_i_name];
+                        if(!i_id){
+                            alert('找不到指标名'+i_name);
+                            return false;
+                        }
+                        expression = expression.replace(eval("/"+i_name+"/g"),'a'+i_id);
+                        
+                    }else{
                         alert('找不到指标名'+i_name);
                         return false;
                     }
-                    expression = expression.replace(eval("/"+i_name+"/g"),'i'+i_id);
                 }
                 this.compute_i_expression = expression;
                 console.log(this.compute_i_expression);

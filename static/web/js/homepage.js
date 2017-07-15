@@ -62,7 +62,7 @@ import HomeLpmItem from '../components/home_latest_pm.vue'
             fetch_my_project_list:function(){
                 this.$http.get('/get_my_project_list',{})
                     .then(function(res){
-                        this.project_info_list = res.body.result.project_info_list
+                        this.project_info_list = res.body.result.project_info_list.slice(0,5);
                     }) 
             },
             fetch_to_me_verify_aevent:function(){
