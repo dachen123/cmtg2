@@ -88,6 +88,9 @@ import HomeLpmItem from '../components/home_latest_pm.vue'
                     }) 
             },
             del_company:function(company){
+                if (!confirm('确认删除公司?')){
+                    return;
+                }
                 this.$http.post('/delete_company',{
                     company_id: company.company_id
                 })
@@ -282,7 +285,7 @@ import HomeLpmItem from '../components/home_latest_pm.vue'
     
     }
 
-    function verify_indicator_data(isok='true'){
+    function verify_indicator_data(isok){
         $('#verify-data-box .overlay').show();
         function delete_rows(){
             var rows = data_verify_table.rows({ 'search': 'applied'}).nodes();

@@ -132,6 +132,7 @@ import IndicatorItem from '../components/indicator_transplant_item.vue'
                 this.$http.get('/get_indicator_list',{
                     params:{
                         project_id:this.project_id,
+                        forum_id:this.board_id,
                         start_index:this.indicator_start_index,
                         count:this.indicator_count
                     }
@@ -149,6 +150,7 @@ import IndicatorItem from '../components/indicator_transplant_item.vue'
                 this.$http.get('/get_indicator_list',{
                     params:{
                         project_id:this.project_id,
+                        forum_id:this.board_id,
                         start_index:next_page_start,
                         count:this.indicator_count
                     }

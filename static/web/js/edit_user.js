@@ -24,6 +24,7 @@ import UserItem from '../components/user_item.vue'
         data:{
             user_info_list:[] ,
             other_company_user:[],
+            classify:"my_company"
         },
         http:{
             emulateJSON: true,
@@ -37,6 +38,7 @@ import UserItem from '../components/user_item.vue'
         },
         methods:{
             get_my_company_user:function(){
+                this.classify = "my_company";
                 this.$http.get('/get_user_info_list',{
                     params:{
                         classify:'my_company' 
@@ -47,6 +49,7 @@ import UserItem from '../components/user_item.vue'
                     }) 
             },
             get_other_company_user:function(){
+                this.classify = "other_company";
                 this.$http.get('/get_user_info_list',{
                     params:{
                         classify:'other_company' 
@@ -57,7 +60,7 @@ import UserItem from '../components/user_item.vue'
                     }) 
             },
             get_child_data:function(user_info){
-                eventBus.$emit('show_data',user_info,'update');
+                eventBus.$emit('show_data',user_info,'update',this.classify);
             },
             create_user:function(){
                 var user_info = {
@@ -71,14 +74,19 @@ import UserItem from '../components/user_item.vue'
                     email:"",
                     company:"",
                 }
-                eventBus.$emit('show_data',user_info,'create');
+                eventBus.$emit('show_data',user_info,'create',this.classify);
             },
             del_user:function(user){
+                var _m = this;
                 this.$http.post('/delete_user',{
                     user_id: user.user_id
                 })
                     .then(function(res){
-                        this.fetch_user_list()
+                        if( _m.classify == 'my_company'){
+                            _m.get_my_company_user()
+                        }else{
+                            _m.get_other_company_user()
+                        }
                     }) 
             }
 
@@ -102,7 +110,8 @@ import UserItem from '../components/user_item.vue'
             set_password:'true',
             user_password:"",
             confirm_user_password:"",
-            error_msg:""
+            error_msg:"",
+            classify:"my_company"
         },
         http:{
             emulateJSON: true,
@@ -198,18 +207,26 @@ import UserItem from '../components/user_item.vue'
                     set_password:this.set_password,
                     user_password:hex_md5(this.user_password),
                 }
+                if (this.company.length > 0){
+                    data['company_id'] = this.company; 
+                }
                 if(this.oprate=='create'){
                     if (this.user_password != this.confirm_user_password){
                         this.error_msg='两次输入的密码不一致';
                         return ;
                     }
+                    var _m = this;
                     this.$http.post('/create_user',data
                             ).then(function(r){
                         console.log(r.body);
-                        var result = config.parsebody(r.body);
-                        $('#add-new-user').modal('hide');
-                        root.fetch_user_list();
-
+                        var result = config.parsebody(r.body,function(result){
+                            $('#add-new-user').modal('hide');
+                            if( _m.classify == 'my_company'){
+                                root.get_my_company_user()
+                            }else{
+                                root.get_other_company_user()
+                            }
+                        });
                     }) 
                 }
                 else {
@@ -220,21 +237,26 @@ import UserItem from '../components/user_item.vue'
                             return ;
                         }
                     }
+                    var _m = this;
                     this.$http.post('/update_user',data
                             ).then(function(r){
                         console.log(r.body);
-                        var result = config.parsebody(r.body);
-                        $('#add-new-user').modal('hide');
-                        root.fetch_user_list();
+                        var result = config.parsebody(r.body,function(result){
+                            $('#add-new-user').modal('hide');
+                            if( _m.classify == 'my_company'){
+                                root.get_my_company_user()
+                            }else{
+                                root.get_other_company_user()
+                            }
+                        });
 
                     }) 
-                
                 }
             }
         
         },
         mounted:function(){
-            eventBus.$on('show_data',function(user_info,op){
+            eventBus.$on('show_data',function(user_info,op,classify){
                 this.error_msg = "";
                 this.oprate = op;
                 this.user_id = user_info.user_id;
@@ -245,6 +267,8 @@ import UserItem from '../components/user_item.vue'
                 this.phone = user_info.phone;
                 this.sex = user_info.sex;
                 this.email = user_info.email;
+                this.company = user_info.company_id;
+                this.classify = classify;
                 $('#add-new-user').modal('show');
                 $('#add-new-user input.validate-alert').each(function(){
                     $(this).removeClass('validate-alert');

@@ -84,6 +84,10 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
         var input = $(this),
             numFiles = input.get(0).files ? input.get(0).files.length : 1,
             label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+        if(!input.get(0).files.length > 0){
+            alert('请先选择需要解析的文件');
+            return;
+        }
         $('#indicator-excel-name').val(label);
         var indicator_position = $('#indicator-name-position').val();
         var formData = new FormData();
@@ -98,7 +102,10 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
             processData: false,
             contentType: false,
             success: function (json) {
-                var r = config.parsebody(json,root.set_indicator_list);
+                var r = config.parsebody(json,function(result){
+                    input.val('');
+                    root.set_indicator_list(result);
+                });
             },
             error: function () {
             }
@@ -111,28 +118,19 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
             numFiles = input.get(0).files ? input.get(0).files.length : 1,
             label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
         $('#indicator-data-excel-name').val(label);
-        // var formData = new FormData();
-        //
-        // formData.append('file', input.get(0).files[0]);
-        // formData.append('project_id', root.project_id);
-        //
-        // $.ajax('/parse_excel_indicator_data', {
-        //     method: "POST",
-        //     data: formData,
-        //     processData: false,
-        //     contentType: false,
-        //     success: function (json) {
-        //         var r = config.parsebody(json);
-        //     },
-        //     error: function () {
-        //     }
-        // }); 
 
 
     });
     $('#upload-indicator-data-btn').on('click',function(){
+        if( !confirm('确认提交?')){
+            return; 
+        }
         $('#excel-import-indicator-data .overlay').show();
         var input = $('#i-data-excel-file-input'); 
+        if(!input.get(0).files.length > 0){
+            alert('请先选择需要上传的文件');
+            return;
+        }
         var formData = new FormData();
         var data_time = $('#i-data-datetimepicker').data('DateTimePicker').date().unix();
         var sheet_num = $('#upload_sheet_num').val();

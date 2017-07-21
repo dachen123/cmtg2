@@ -5,11 +5,14 @@
         <!-- <td> -->
         <!--     {{item.statistics_method}} -->
         <!-- </td> -->
-        <td>
-            原始值
-        </td>
+        <!-- <td> -->
+        <!--     原始值 -->
+        <!-- </td> -->
         <!-- <td><span class="label label-success">{{item.status}}</span></td> -->
-        <td><span class="label label-success">正常</span></td>
+        <td>
+            <span v-if="item.status==='normal'" class="label label-success">正常</span>
+            <span v-else-if="item.status==='alarm'" class="label label-danger">报警</span>
+        </td>
         <td>
             <button v-on:click="redirect_to_update" class="btn btn-xs btn-primary update-index-btn" style="margin-right:5px;">编辑</button>
             <button v-on:click="del_indicator" class="btn btn-xs btn-danger" >删除</button></td>

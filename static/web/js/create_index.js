@@ -33,6 +33,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             rule_id:"",
             statistic_style:"raw",
             expect_value:"",
+            expect_bool_value:"1",
             compare_mode:"higher",
             compare_period:"none",
             check_time_type:"date",
@@ -73,12 +74,19 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
         watch:{
             compare_target:function(value){
                 var expect_input = document.getElementById('import-expect-value-region');
+                var expect_bool_input = document.getElementById('import-expect-bool-value-region');
                 var select_indicator = document.getElementById('filter-indicator-region');
                 if(value == 'expect_value'){
-                    expect_input.style.display='inline-block';
+                    if(this.indicator_property == 'boolean'){
+                    
+                        expect_bool_input.style.display='inline-block';
+                    }else{
+                        expect_input.style.display='inline-block';
+                    }
                     select_indicator.style.display='none';
                 }else{
                     expect_input.style.display='none';
+                        expect_bool_input.style.display='none';
                     select_indicator.style.display='inline-block';
                 }
             },
@@ -105,9 +113,13 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                 if (val=='boolean'){
                     $('#input-index-data-div').hide(); 
                     $('#input-index-bool-data-div').show(); 
+                    $('#import-expect-value-region').hide(); 
+                    $('#import-expect-bool-value-region').show(); 
                 }else{
                     $('#input-index-data-div').show(); 
                     $('#input-index-bool-data-div').hide(); 
+                    $('#import-expect-value-region').show(); 
+                    $('#import-expect-bool-value-region').hide(); 
                 }
             },
             is_compute_indicator:function(val){
@@ -116,7 +128,8 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                 }else{
                     $('#compute_indicator_region').hide();
                 }
-            }
+            },
+            
         },
         methods:{
             get_indicator_list_for_map:function(callback){
@@ -414,9 +427,15 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             },
             post_rule_data:function(){
                 var check_time = $('#rule-datetimepicker').data('DateTimePicker').date().unix(); 
+                var expect = "";
+                if (this.indicator_property == 'boolean'){
+                    expect = this.expect_bool_value;
+                }else{
+                    expect = this.expect_value;
+                }
                 var data = {
                         indicator_id:this.indicator_id,
-                        expect_value:this.expect_value,
+                        expect_value:expect,
                         compare_mode:this.compare_mode,
                         statistic_style:this.statistic_style,
                         compare_target:this.compare_target,
@@ -478,6 +497,11 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             get_child_rule_data:function(rule_info){
                 this.rule_op = 'update';
                 this.rule_id = rule_info.rule_id;
+                if(this.indicator_property == 'boolean'){
+                    this.expect_bool_value = rule_info.expect;
+                }else{
+                    this.expect_value = rule_info.expect;
+                }
                 this.expect_value = rule_info.expect;
                 this.compare_target = rule_info.compare_target;
                 this.compare_period = rule_info.repeat_period;
