@@ -46,6 +46,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             compute_indicator_expression:"",
             compute_i_expression:"",
             is_compute_indicator:"false",
+            is_durative:"false",
             indicator_map:{},
             indicator_map_reverse:{},
         },
@@ -176,7 +177,8 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                     project_id:this.project_id,
                     forum:this.forum,
                     collect_period:this.collect_period,
-                    is_compute_indicator:this.is_compute_indicator
+                    is_compute_indicator:this.is_compute_indicator,
+                    is_durative:this.is_durative
 
                 }
                 if(this.is_compute_indicator == 'true'){
@@ -225,7 +227,8 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                     project_id:this.project_id,
                     forum:this.forum,
                     collect_period:this.collect_period,
-                    is_compute_indicator:this.is_compute_indicator
+                    is_compute_indicator:this.is_compute_indicator,
+                    is_durative:this.is_durative
                 }
                 if(this.is_compute_indicator == 'true'){
                     data['compute_expression'] = this.compute_i_expression;
@@ -295,6 +298,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                     this.collect_period=indicator_info.collect_period,
                     this.is_compute_indicator=indicator_info.is_compute_indicator,
                     this.set_expression_to_unicode(indicator_info.compute_expression);
+                    this.is_durative=indicator_info.is_durative;
                 
                 });
             
