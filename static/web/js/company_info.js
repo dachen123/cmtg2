@@ -67,11 +67,17 @@ import CompanyProjectItem from '../components/company_project_item.vue'
                  
             },
             del_project:function(project){
+                if( !confirm('确认删除项目？')){
+                    return 
+                }
                 this.$http.post('/delete_project',{
                     project_id: project.project_id
                 })
                     .then(function(res){
-                        this.fetch_project_list()
+                        var _m = this;
+                        var r = config.parsebody(res.body,function(result){
+                            _m.fetch_project_list()
+                        })
                     }) 
             }
         }

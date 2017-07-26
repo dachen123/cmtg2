@@ -24,6 +24,24 @@ import { config } from './common.js'
         },
         methods:{
             post_new_company:function(){
+                if(!(this.company_name && this.company_name.length>0)){
+                    alert('请输入公司名字'); 
+                    return;
+                }
+                if(!(this.company_desc && this.company_desc.length>0)){
+                    alert('请输入公司描述'); 
+                    return;
+                }
+                if(!this.leader.user_name){
+                    alert('请输入公司负责人'); 
+                    return;
+                
+                }
+                if(!this.contact.user_name){
+                    alert('请输入公司联系人'); 
+                    return;
+                }
+                $('#create-company-box .overlay').show();
                 var data = {
                     company_name:this.company_name,
                     company_desc:this.company_desc,
@@ -51,6 +69,7 @@ import { config } from './common.js'
                 this.$http.post('/add_company_with_leader',data
                 ).then(function(r){
                     console.log(r.body);
+                    $('#create-company-box .overlay').hide();
                     var r = config.parsebody(r.body,function(result){
                         localStorage.removeItem('sidebar_current_content');
                         window.location.href='/company_info?company_id='+result.company_info.company_id;
@@ -200,10 +219,10 @@ import { config } from './common.js'
                 this.error_msg = "";
                 this.user_name = user_info.user_name;
                 this.image = user_info.image;
-                this.job_level = user_info.job_level;
-                this.job_role = user_info.job_role;
+                this.job_level = user_info.job_level || 'master';
+                this.job_role = user_info.job_role || 'input_master';
                 this.phone = user_info.phone;
-                this.sex = user_info.sex;
+                this.sex = user_info.sex || 'male';
                 this.email = user_info.email;
                 this.set_password = user_info.set_password;
                 this.user_password = user_info.user_password;

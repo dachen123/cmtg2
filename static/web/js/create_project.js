@@ -19,6 +19,7 @@ import { config } from './common.js'
             contact_id:"",
             project_type:'default',
             inherit_type:"no",
+            error_msg:"",
         },
         http:{
             emulateJSON: true,
@@ -29,7 +30,22 @@ import { config } from './common.js'
         
         },
         methods:{
+            validate_input:function(){
+                var notNull = true;
+                var _m = this;
+                $('#create-project-box [required]').each(function(){
+                    if($.AdminLTE.utils.isNull($(this).val())){
+                        notNull = false;  
+                        $(this).addClass('validate-alert');
+                        _m.error_msg = $(this).attr('data-error_msg');
+                    }
+                }); 
+                return notNull;
+            },
             add_project: function(){
+                if(!this.validate_input()){
+                    return ;
+                }
                 var p_create_time = $('#p-create-datetimepicker').data('DateTimePicker').date().unix();
                 var p_end_time = $('#p-end-datetimepicker').data('DateTimePicker').date().unix();
                 var parent_id = config.GetURLParameter('parent_id');

@@ -486,7 +486,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                 }
             
             },
-            get_inidactor_cascader_select_val(indicator_id){
+            get_indicator_cascader_select_val:function(indicator_id){
                 this.$http.get('/get_rule_cascader_select_val',{params:{
                     indicator_id:indicator_id
                 }})
@@ -512,7 +512,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                 this.compare_mode = rule_info.compare_mode;
                 this.delay_days = rule_info.delay_days;
                 if (this.compare_target == 'indicator'){
-                    this.get_inidactor_cascader_select_val(rule_info.related_indicator_id);
+                    this.get_indicator_cascader_select_val(rule_info.related_indicator_id);
                 }
                 if(rule_info.check_time){
                     $('#rule-datetimepicker').data('DateTimePicker').date(moment.unix(rule_info.check_time));

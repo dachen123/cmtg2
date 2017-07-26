@@ -95,7 +95,10 @@ import HomeLpmItem from '../components/home_latest_pm.vue'
                     company_id: company.company_id
                 })
                     .then(function(res){
-                        this.fetch_company_list()
+                        var _m = this;
+                        var r = config.parsebody(res.body,function(result){
+                            _m.fetch_company_list()
+                        })
                     }) 
             
             },
@@ -105,7 +108,10 @@ import HomeLpmItem from '../components/home_latest_pm.vue'
                     flag    :flag
                 })
                     .then(function(res){
-                        this.fetch_to_me_verify_aevent()
+                        var _m = this;
+                        var r = config.parsebody(res.body,function(result){
+                            _m.fetch_to_me_verify_aevent()
+                        })
                     }) 
             }
         }
