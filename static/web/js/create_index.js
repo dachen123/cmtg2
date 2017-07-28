@@ -36,6 +36,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             expect_bool_value:"1",
             compare_mode:"higher",
             compare_period:"none",
+            errorband:"0",
             check_time_type:"date",
             delay_days:"0",
             level:"",
@@ -444,6 +445,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                         statistic_style:this.statistic_style,
                         compare_target:this.compare_target,
                         compare_period:this.compare_period,
+                        errorband:this.errorband,
                         delay_days:this.delay_days,
                 }
                 if(this.check_time_type == 'date'){
@@ -509,6 +511,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                 this.expect_value = rule_info.expect;
                 this.compare_target = rule_info.compare_target;
                 this.compare_period = rule_info.repeat_period;
+                this.errorband = rule_info.errorband;
                 this.compare_mode = rule_info.compare_mode;
                 this.delay_days = rule_info.delay_days;
                 if (this.compare_target == 'indicator'){

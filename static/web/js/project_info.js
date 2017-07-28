@@ -463,5 +463,79 @@ import IndicatorItem from '../components/indicator_transplant_item.vue'
     
     });
 
+
+    $('#update-board-trigger').on('click',function(){
+        $.ajax({
+            type: "GET",
+            url:'/get_project_all_board',
+            data: {
+                project_id:root.project_id
+            },
+            success: function (json) {
+                config.parsebody(json,function(ret){
+                    var ol = $('#project-board-modal #project-board-list-ol');
+                    ol.empty();
+                    for(var index in ret.board_info_list){
+                        var b = ret.board_info_list[index];
+
+                        ol.append('<li data-board_id="'+b.board_id+'" style="padding:5px 0px;">'
+                                +'<input class="input-sm form-control" '
+                                +'style="width:40%;display:inline-block;"  '
+                                +'value="'+b.name+'"></input><button class="btn btn-xs '
+                                +'btn-danger pull-right delete-board">删除</button></li> ')
+                    }
+                    $('#project-board-modal').modal('show'); 
+                });
+    
+            },
+            error: function () {
+                console.log('网络繁忙，稍后重试');
+            }
+        }); 
+    });
+
+    $('#project-board-modal #new-board').on('click',function(){
+        $('#project-board-modal #project-board-list-ol').append('<li data-board_id="new" style="padding:5px 0px;">'
+                +'<input class="input-sm form-control" '
+                +'style="width:40%;display:inline-block;"  '
+                +'value=""></input><button class="btn btn-xs '
+                +'btn-danger pull-right delete-board">删除</button></li> ')
+    })
+
+    $('#project-board-modal').on('click','.delete-board',function(){
+        $(this).parents('li').remove();
+    });
+
+    $('#project-board-modal #save-board').on('click',function(){
+        var board_list = [];
+        $('#project-board-modal #project-board-list-ol').find('li').each(function(){
+            board_list.push({
+                board_id:$(this).attr('data-board_id'),
+                board_name:$(this).find('input').val()
+            });
+        });
+        $.ajax({
+            type: "POST",
+            url:'/save_project_board',
+            data: {
+                project_id:root.project_id,
+                board_list:JSON.stringify(board_list)
+            },
+            success: function (json) {
+                config.parsebody(json,function(ret){
+                    alert('保存成功');
+                    $('#project-board-modal').modal('hide'); 
+                });
+    
+            },
+            error: function () {
+                console.log('网络繁忙，稍后重试');
+            }
+        }); 
+    });
+    $('#project-board-modal #cancel-update').on('click',function(){
+        $('#project-board-modal').modal('hide'); 
+    });
+
 })(this);
 

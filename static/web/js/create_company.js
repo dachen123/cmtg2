@@ -41,6 +41,10 @@ import { config } from './common.js'
                     alert('请输入公司联系人'); 
                     return;
                 }
+                var participant = $('#participant-select').val();
+                if( !(participant && participant.length > 0)){
+                    alert('请输入公司参与人');
+                }
                 $('#create-company-box .overlay').show();
                 var data = {
                     company_name:this.company_name,
@@ -63,7 +67,9 @@ import { config } from './common.js'
                     contact_job_role:this.contact.job_role,
                     contact_phone:this.contact.phone,
                     contact_sex:this.contact.sex,
-                    contact_password:this.contact.user_password
+                    contact_password:this.contact.user_password,
+
+                    participant:JSON.stringify(participant)
                 
                 }
                 this.$http.post('/add_company_with_leader',data
@@ -243,7 +249,17 @@ import { config } from './common.js'
      
         root.company_image = url;
     };
+    
+    $('#participant-select').multiselect({
+        includeSelectAllOption: true,
+        enableFiltering: true,
+        buttonWidth: '100%',
+        nonSelectedText: '请选择相关参与人',
+        numberDisplayed: 10,
+        selectAllText: '全选',
+        allSelectedText: '已选择所有人'
 
+    });
 
 
 })(this);
