@@ -90,11 +90,16 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
         }
         $('#indicator-excel-name').val(label);
         var indicator_position = $('#indicator-name-position').val();
+        var sheet_name_str = $('#sheet-name-input').val();
+        var sheet_title_num = $('#sheet-title-num').val();
         var formData = new FormData();
         
         formData.append('file', input.get(0).files[0]);
         formData.append('project_id', root.project_id);
         formData.append('indicator_position', indicator_position);
+        formData.append('sheet_name', sheet_name_str);
+        //formData.append('sheet_names', JSON.stringify(sheet_name_list));
+        formData.append('title_lines', sheet_title_num);
 
         $.ajax('/parse_excel_indicator', {
             method: "POST",
@@ -106,6 +111,7 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
                     input.val('');
                     root.set_indicator_list(result);
                 });
+                input.val('');
             },
             error: function () {
             }
@@ -113,6 +119,7 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
 
     });
 
+    //导入指标数据部分
     $(document).on('change', '#i-data-excel-file-input', function() {
         var input = $(this),
             numFiles = input.get(0).files ? input.get(0).files.length : 1,
@@ -134,12 +141,16 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
         var formData = new FormData();
         var data_time = $('#i-data-datetimepicker').data('DateTimePicker').date().unix();
         var sheet_num = $('#upload_sheet_num').val();
+        var sheet_name_str = $('#data-sheet-name-input').val();
+        var sheet_title_num = $('#data-sheet-title-num').val();
         var indicator_position = $('#i-name-position').val();
         
         formData.append('file', input.get(0).files[0]);
         formData.append('project_id', root.project_id);
         formData.append('data_time', data_time);
         formData.append('sheet_num', sheet_num);
+        formData.append('sheet_name', sheet_name_str);
+        formData.append('title_lines', sheet_title_num);
         formData.append('indicator_position', indicator_position);
 
         $.ajax('/parse_excel_indicator_data', {
@@ -158,6 +169,99 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
                 $('#excel-import-indicator-data .overlay').hide();
             }
         }); 
+    });
+
+    //导入指标预期值
+    $(document).on('change', '#indicator-expect-excel-file-input', function() {
+        var input = $(this),
+            numFiles = input.get(0).files ? input.get(0).files.length : 1,
+            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+        $('#indicator-expect-excel-name').val(label);
+
+
+    });
+
+    $('#upload-indicator-expect-excel-btn').on('click',function(){
+        if( !confirm('确认提交?')){
+            return; 
+        }
+        $('#excel-import-expects .overlay').show();
+        var input = $('#indicator-expect-excel-file-input'); 
+        if(!input.get(0).files.length > 0){
+            alert('请先选择需要上传的文件');
+            return;
+        }
+        var formData = new FormData();
+
+        var sheet_name_str = $('#expect-sheet-name-input').val();
+        var sheet_name_list = sheet_name_str.split('；');
+        if(sheet_name_list.length <= 0){
+            sheet_name_list = sheet_name_str.split(';');
+        }
+        var sheet_title_num = $('#expect-sheet-title-num').val();
+
+        var errorband = $('#expect-errorband-input').val();
+        var delay_days = $('#expect-rule-delay-input').val();
+
+        var indicator_position = $('#expect-indicator-name-position').val();
+        
+        formData.append('file', input.get(0).files[0]);
+        formData.append('project_id', root.project_id);
+        formData.append('sheet_names', JSON.stringify(sheet_name_list));
+        formData.append('title_lines', sheet_title_num);
+        formData.append('errorband', parseFloat(errorband)/100);
+        formData.append('delay_days', delay_days);
+        formData.append('indicator_position', indicator_position);
+
+        $.ajax('/parse_excel_indicator_expect', {
+            method: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (json) {
+                var r = config.parsebody(json,function(){
+                    alert('导入成功!'); 
+                });
+                $('#excel-import-expects .overlay').hide();
+            },
+            error: function () {
+                alert('网络错误，请重试');
+                $('#excel-import-expects .overlay').hide();
+            }
+        }); 
+    });
+
+    $('#precheck-gouji-btn').on('click',function(){
+        $('#excel-import-indicator-data .overlay').show();
+        var data_time = $('#i-data-datetimepicker').data('DateTimePicker').date().unix();
+        var project_id = root.project_id;
+
+        $.ajax({
+            type: "POST",
+            url:'/precheck_gouji_rules',
+            data: {
+                project_id:project_id,
+                data_time:data_time
+            },
+            success: function (json) {
+                var r = config.parsebody(json,function(result){
+                    var modal= $('#precheck-result-modal');
+                    modal.find('#precheck-result-list-ul').empty();
+                    for (var index in result.messages){
+                         modal.find('#precheck-result-list-ul').append('<li>'
+                                +result.messages[index]+'</li>');
+                    }
+                    modal.modal('show');
+                });
+                $('#excel-import-indicator-data .overlay').hide();
+            },
+            error: function () {
+                alert('网络错误，请重试');
+                $('#excel-import-indicator-data .overlay').hide();
+            }
+        }); 
+
+        
     });
 
 })(this);

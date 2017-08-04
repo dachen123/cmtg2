@@ -7,12 +7,13 @@
             <span >
                 {{item.solver.name}}
             </span>
-            <div class="pull-right dropdown" v-if="item.status === 'unverified'">
-                <a class="btn-xs btn-danger my-audit-btn dropdown-toggle" style="border:0px;cursor:pointer;" data-toggle="dropdown">审核</a>
-                <ul  class="dropdown-menu" style="min-width:0px;">
-                    <li><a v-on:click.prevent="verify_pass" href="#">通过</a></li>
-                    <li><a v-on:click.prevent="verify_reject" href="#">驳回</a></li>
-                </ul>
+            <div class="pull-right " v-if="item.status === 'unverified'">
+                <button v-on:click="show_audit_modal" class="btn-xs btn-danger my-audit-btn " style="border:0px;cursor:pointer;" >审核</button>
+                <!-- <a class="btn-xs btn-danger my-audit-btn dropdown-toggle" style="border:0px;cursor:pointer;" data-toggle="dropdown">审核</a> -->
+                <!-- <ul  class="dropdown-menu" style="min-width:0px;"> -->
+                <!--     <li><a v-on:click.prevent="verify_pass" href="#">通过</a></li> -->
+                <!--     <li><a v-on:click.prevent="verify_reject" href="#">驳回</a></li> -->
+                <!-- </ul> -->
             </div>
             <div class="pull-right dropdown" v-else-if="item.status === 'unsolved'">
                 <label class="label label-primary">未通过</i></label>
@@ -21,7 +22,7 @@
                 <label class="label label-success">已通过</i></label>
             </div>
             <p>
-               {{item.description}}
+                {{item.description}}备注：{{item.handling}}
             </p>
         </div>
     </div>
@@ -48,6 +49,10 @@
                 }
             
             },
+            show_audit_modal:function(){
+                $('#audit-modal').modal('show'); 
+                this.$emit('verify_aevent',this.item); 
+            }
         },
         
     }

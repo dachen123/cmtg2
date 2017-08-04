@@ -37,6 +37,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             compare_mode:"higher",
             compare_period:"none",
             errorband:"0",
+            errorband_flag:"true",
             check_time_type:"date",
             delay_days:"0",
             level:"",
@@ -74,6 +75,15 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             IndicatorRuleItem,
         },
         watch:{
+            errorband_flag:function(val){
+                if(val == 'true' || val == true){
+                    $('#errorband-addon').hide(); 
+                }else{
+                
+                    $('#errorband-addon').show(); 
+                }
+            
+            },
             compare_target:function(value){
                 var expect_input = document.getElementById('import-expect-value-region');
                 var expect_bool_input = document.getElementById('import-expect-bool-value-region');
@@ -427,6 +437,12 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                 // $('.table-add-item').toggle('fast');
                 $('.table-add-item').show();
             },
+            show_del_rule_by_date_box:function(){
+                $('#del-rule-div').show();
+            },
+            cancel_del:function(){
+                $('#del-rule-div').hide(); 
+            },
             cancel_op:function(){
                 $('.table-add-item').hide();
             },
@@ -438,6 +454,12 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                 }else{
                     expect = this.expect_value;
                 }
+                var errorband = '0';
+                if (this.errorband_flag == 'true'){
+                    errorband = this.errorband; 
+                }else{
+                    errorband = parseFloat(this.errorband)/100; 
+                }
                 var data = {
                         indicator_id:this.indicator_id,
                         expect_value:expect,
@@ -445,7 +467,8 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                         statistic_style:this.statistic_style,
                         compare_target:this.compare_target,
                         compare_period:this.compare_period,
-                        errorband:this.errorband,
+                        errorband:errorband,
+                        errorband_flag:this.errorband_flag,
                         delay_days:this.delay_days,
                 }
                 if(this.check_time_type == 'date'){
@@ -511,7 +534,13 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                 this.expect_value = rule_info.expect;
                 this.compare_target = rule_info.compare_target;
                 this.compare_period = rule_info.repeat_period;
-                this.errorband = rule_info.errorband;
+
+                this.errorband_flag = rule_info.errorband_flag;
+                if(this.errorband_flag == 'true' || this.errorband_flag  == true){
+                    this.errorband = rule_info.errorband;
+                }else{
+                    this.errorband = rule_info.errorband*100;
+                }
                 this.compare_mode = rule_info.compare_mode;
                 this.delay_days = rule_info.delay_days;
                 if (this.compare_target == 'indicator'){
@@ -548,6 +577,27 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                 })
                     .then(function(res){
                         this.fetch_rule_list()
+                    }) 
+            
+            },
+            del_rule_by_date_range:function(){
+                if(!confirm('确认删除?')){
+                    return;
+                }
+                var data={
+                    project_id:this.project_id,
+                    begin_time:startDate,
+                    end_time:endDate
+                }
+                this.$http.post('/del_rule_in_date_range',data
+                )
+                    .then(function(res){
+                        var _m = this;
+                        var r = config.parsebody(res.body,function(result){
+                            alert('删除成功');
+                            _m.fetch_rule_list();
+                            _m.cancel_del();
+                        })
                     }) 
             
             },
@@ -807,6 +857,57 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
     function post_handler(e){
     
     }
+
+    var startDate = moment().local().format('MM/DD/YYYY');
+    var endDate = moment().local().add( moment.duration(1,'months'));
+    var endDate = endDate.format('MM/DD/YYYY');
+     
+    $('#inputDateRange').daterangepicker({
+        "showDropdowns": true,
+        "autoApply": true,
+        "locale": {
+            "format": "MM/DD/YYYY",
+            "separator": " - ",
+            "applyLabel": "确定",
+            "cancelLabel": "取消",
+            "fromLabel": "从",
+            "toLabel": "到",
+            "customRangeLabel": "Custom",
+            "weekLabel": "W",
+            "daysOfWeek": [
+                "日",
+                "一",
+                "二",
+                "三",
+                "四",
+                "五",
+                "六"
+            ],
+            "monthNames": [
+                "一月",
+                "二月",
+                "三月",
+                "四月",
+                "五月",
+                "六月",
+                "七月",
+                "八月",
+                "九月",
+                "十月",
+                "十一月",
+                "十二月"
+            ],
+            "firstDay": 1
+        },
+        "startDate": startDate,
+        "endDate": endDate
+    }, function(start, end, label) {
+        // console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+        startDate = start.format('MM/DD/YYYY');
+        endDate = end.format('MM/DD/YYYY');
+    });
+
+
 
 
 })(this);

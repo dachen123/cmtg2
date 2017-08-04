@@ -61,7 +61,38 @@ export default {
         },
         check_time:function(time){
             var d = new Date(time*1000);
-            return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+            //return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+            var moment_time = moment.unix(time);
+            if(this.item.repeat_period == 'none'){
+                return moment_time.format('YYYY-MM-DD');
+            }else if(this.item.repeat_period == 'day'){
+                return '每天';
+            
+            }else if(this.item.repeat_period == 'week'){
+                return '每周周'+moment_time.isoWeekday(); 
+            }else if(this.item.repeat_period == 'month'){
+                if(!time){
+                    return '月末' 
+                }else{
+                    return '每月第'+moment_time.date()+'天'; 
+                }
+            
+            }else if(this.item.repeat_period == 'season'){
+                if(!time){
+                    return '季度末' 
+                }else{
+                    return '每季度第'+moment_time.date()+'天'; 
+                }
+            
+            }else if(this.item.repeat_period == 'year'){
+                return '每年'+(moment_time.month()+1)+'月'+moment_time.date()+'日';
+            
+            }else if(this.item.repeat_period == 'fortnight'){
+                return '每两周周'+moment_time.isoWeekday(); 
+            
+            }else{
+                return moment.unix(time).format('YYYY-MM-DD');
+            }
         },
         expect_text:function(val){
             if(this.indicator_property == 'boolean'){

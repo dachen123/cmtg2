@@ -26,7 +26,8 @@ import HomeLpmItem from '../components/home_latest_pm.vue'
             company_info_list:[],
             to_me_aevents:[],
             from_me_aevents:[],
-            project_info_list:[]
+            project_info_list:[],
+            to_me_aevent_id:'',
         },
         http:{
             emulateJSON: true,
@@ -102,21 +103,38 @@ import HomeLpmItem from '../components/home_latest_pm.vue'
                     }) 
             
             },
-            verify_aevent:function(aevent,flag){
+            verify_aevent:function(aevent){
+                // this.$http.post('/solve_aevent',{
+                //     aevent_id: aevent.aevent_id,
+                //     flag    :flag
+                // })
+                //     .then(function(res){
+                //         var _m = this;
+                //         var r = config.parsebody(res.body,function(result){
+                //             _m.fetch_to_me_verify_aevent()
+                //         })
+                //     }) 
+                this.to_me_aevent_id = aevent.aevent_id;
+            },
+            audit_aevent:function(flag){
                 this.$http.post('/solve_aevent',{
-                    aevent_id: aevent.aevent_id,
+                    aevent_id: this.to_me_aevent_id,
+                    handling_msg:$('#audit-opinion').val(),
                     flag    :flag
                 })
                     .then(function(res){
                         var _m = this;
                         var r = config.parsebody(res.body,function(result){
-                            _m.fetch_to_me_verify_aevent()
+                            $('#audit-modal').modal('hide');
+                            _m.fetch_to_me_verify_aevent();
                         })
                     }) 
             }
         }
         
     });
+
+    window.root=root;
 
     var data_verify_table = $("#data-verify-table").DataTable({
         language:{
