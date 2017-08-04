@@ -8,7 +8,8 @@
 </h4>
 
             <div class="attachment-text">
-                {{item.company_desc}}<a href="#">more</a>
+                <!-- {{item.company_desc}}<a href="#">more</a> -->
+                {{item.company_desc}}
             </div>
             <!-- /.attachment-text -->
         </div>

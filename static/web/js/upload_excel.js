@@ -132,12 +132,12 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
         if( !confirm('确认提交?')){
             return; 
         }
-        $('#excel-import-indicator-data .overlay').show();
         var input = $('#i-data-excel-file-input'); 
         if(!input.get(0).files.length > 0){
             alert('请先选择需要上传的文件');
             return;
         }
+        $('#excel-import-indicator-data .overlay').show();
         var formData = new FormData();
         var data_time = $('#i-data-datetimepicker').data('DateTimePicker').date().unix();
         var sheet_num = $('#upload_sheet_num').val();

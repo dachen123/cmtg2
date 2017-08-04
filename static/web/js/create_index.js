@@ -702,16 +702,18 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             },
             success: function (json) {
                 var elem = $("#project-select");
-                elem.empty(); //清空原有的
-                var p_list = json.result.project_info_list;
-                for (var index in p_list){
-                    elem.append("<option value='"+p_list[index].project_id+"'>"+p_list[index].project_name+"</option>");  //添加一项option
+                if(elem.length > 0){
+                    elem.empty(); //清空原有的
+                    var p_list = json.result.project_info_list;
+                    for (var index in p_list){
+                        elem.append("<option value='"+p_list[index].project_id+"'>"+p_list[index].project_name+"</option>");  //添加一项option
+                    }
+                    elem.get(0).selectedIndex=0;  //设置Select索引值为1的项选中 
+                    $('#project-select').multiselect('rebuild');
+                    var forum_id = $("#board-select").val();
+                    var project_id = elem.val();
+                    rebuild_indicator_select(company_id,project_id,forum_id);
                 }
-                elem.get(0).selectedIndex=0;  //设置Select索引值为1的项选中 
-                $('#project-select').multiselect('rebuild');
-                var forum_id = $("#board-select").val();
-                var project_id = elem.val();
-                rebuild_indicator_select(company_id,project_id,forum_id);
     
             },
             error: function () {
@@ -731,17 +733,19 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             },
             success: function (json) {
                 var elem = $("#board-select");
-                elem.empty(); //清空原有的
-                var b_list = json.result.board_info_list;
-                for (var index in b_list){
-                    elem.append("<option value='"+b_list[index].board_id+"'>"+b_list[index].name+"</option>");  //添加一项option
+                if(elem.length > 0){
+                    elem.empty(); //清空原有的
+                    var b_list = json.result.board_info_list;
+                    for (var index in b_list){
+                        elem.append("<option value='"+b_list[index].board_id+"'>"+b_list[index].name+"</option>");  //添加一项option
+                    }
+                    elem.get(0).selectedIndex=0;  //设置Select索引值为1的项选中 
+                    $('#board-select').multiselect('rebuild');
+                    var forum_id = elem.val();
+                    var project_id = $('#project-select').val();
+                    var company_id = $('#company-select').val();
+                    rebuild_indicator_select(company_id,project_id,forum_id);
                 }
-                elem.get(0).selectedIndex=0;  //设置Select索引值为1的项选中 
-                $('#board-select').multiselect('rebuild');
-                var forum_id = elem.val();
-                var project_id = $('#project-select').val();
-                var company_id = $('#company-select').val();
-                rebuild_indicator_select(company_id,project_id,forum_id);
 
             },
             error: function () {
@@ -763,13 +767,15 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             },
             success: function (json) {
                 var elem = $('#indicator-select');
-                elem.empty(); //清空原有的
-                var i_list = json.result.indicator_info_list;
-                for (var index in i_list){
-                    elem.append("<option value='"+i_list[index].indicator_id+"'>"+i_list[index].indicator_name+"</option>");  //添加一项option
+                if(elem.length > 0){
+                    elem.empty(); //清空原有的
+                    var i_list = json.result.indicator_info_list;
+                    for (var index in i_list){
+                        elem.append("<option value='"+i_list[index].indicator_id+"'>"+i_list[index].indicator_name+"</option>");  //添加一项option
+                    }
+                    elem.get(0).selectedIndex=0;  //设置Select索引值为1的项选中 
+                    $('#indicator-select').multiselect('rebuild');
                 }
-                elem.get(0).selectedIndex=0;  //设置Select索引值为1的项选中 
-                $('#indicator-select').multiselect('rebuild');
     
             },
             error: function () {
@@ -787,15 +793,17 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             data: {},
             success: function (json) {
                 var elem = $('#company-select');
-                elem.empty(); //清空原有的
-                var c_list = json.result.company_info_list;
-                for (var index in c_list){
-                    var c = c_list[index];
-                    elem.append("<option value='"+c.company_id+"'>"+c.company_name+"</option>");  //添加一项option
+                if(elem.length > 0){
+                    elem.empty(); //清空原有的
+                    var c_list = json.result.company_info_list;
+                    for (var index in c_list){
+                        var c = c_list[index];
+                        elem.append("<option value='"+c.company_id+"'>"+c.company_name+"</option>");  //添加一项option
+                    }
+                    elem.get(0).selectedIndex=0;  //设置Select索引值为1的项选中 
+                    $('#company-select').multiselect('rebuild');
+                    rebuild_project_select(elem.val());
                 }
-                elem.get(0).selectedIndex=0;  //设置Select索引值为1的项选中 
-                $('#company-select').multiselect('rebuild');
-                rebuild_project_select(elem.val());
     
             },
             error: function () {

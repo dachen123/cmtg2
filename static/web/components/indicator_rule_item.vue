@@ -66,29 +66,29 @@ export default {
             if(this.item.repeat_period == 'none'){
                 return moment_time.format('YYYY-MM-DD');
             }else if(this.item.repeat_period == 'day'){
-                return '每天';
+                return moment_time.format('YYYY-MM-DD')+'起每天检查';
             
             }else if(this.item.repeat_period == 'week'){
-                return '每周周'+moment_time.isoWeekday(); 
+                return moment_time.format('YYYY-MM-DD')+'起每周检查'; 
             }else if(this.item.repeat_period == 'month'){
                 if(!time){
-                    return '月末' 
+                    return '月末检查' 
                 }else{
-                    return '每月第'+moment_time.date()+'天'; 
+                    return moment_time.format('YYYY-MM-DD')+'起每月检查'; 
                 }
             
             }else if(this.item.repeat_period == 'season'){
                 if(!time){
-                    return '季度末' 
+                    return '季度末检查' 
                 }else{
-                    return '每季度第'+moment_time.date()+'天'; 
+                    return moment_time.format('YYYY-MM-DD')+'起每季度检查'; 
                 }
             
             }else if(this.item.repeat_period == 'year'){
-                return '每年'+(moment_time.month()+1)+'月'+moment_time.date()+'日';
+                return '每年'+(moment_time.month()+1)+'月'+moment_time.date()+'日检查';
             
             }else if(this.item.repeat_period == 'fortnight'){
-                return '每两周周'+moment_time.isoWeekday(); 
+                return moment_time.format('YYYY-MM-DD')+'起每两周检查'; 
             
             }else{
                 return moment.unix(time).format('YYYY-MM-DD');
