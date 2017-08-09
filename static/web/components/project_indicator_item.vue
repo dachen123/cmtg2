@@ -14,8 +14,8 @@
             <span v-else-if="item.status==='alarm'" class="label label-danger">报警</span>
         </td>
         <td>
-            <button v-on:click="redirect_to_update" class="btn btn-xs btn-primary update-index-btn" style="margin-right:5px;">编辑</button>
-            <button v-on:click="del_indicator" class="btn btn-xs btn-danger" >删除</button></td>
+            <button v-on:click="redirect_to_update" class="btn btn-xs btn-primary update-index-btn life-status" style="margin-right:5px;">编辑</button>
+            <button v-on:click="del_indicator" class="btn btn-xs btn-danger life-status" >删除</button></td>
     </tr>
 
 </template>

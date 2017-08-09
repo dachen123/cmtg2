@@ -18,12 +18,18 @@
                     <tbody>
                         <tr>
                             <th>时间</th>
-                            <th>数值</th>
+                            <th>
+                                数值
+                            </th>
                             <!-- <th>描述</th> -->
                         </tr>
                         <tr v-for="data in my_table.data_list">
                             <td>{{data.data_time}}</td>
-                            <td>{{data.data_value}}</td>
+                            <td>
+                                {{data.data_value}}
+                                <button v-if="table.statistic_style == 'raw' && table.data_type=='statistic'" v-on:click="get_indicator_data_track(data.data_time)" type="button" class="btn btn-box-tool"><i class="fa fa-history"></i></button>
+                                <button  v-if="table.statistic_style == 'raw' && table.data_type=='statistic'" v-on:click="get_data_proof_by_date(data.data_time)"  type="button" class="btn btn-box-tool"><i class="fa fa-paperclip"></i></button>
+                            </td>
                             <!-- <td></td> -->
                         </tr>
                     </tbody>
@@ -105,6 +111,69 @@
                            comp.data_start_index = next_page_start;
                         }
                     }) 
+            },
+            get_indicator_data_track:function(data_date){
+                var comp = this;
+                chart.$http.get('/get_indicator_data_track',{
+                    params:{
+                        project_id:this.table.project_id,
+                        indicator_id:this.table.indicator_id,
+                        data_date:data_date
+                    }
+                }).then(function(res){
+                    if(res.body.error_code == 'OK'){
+                        var track = res.body.result.track;
+                        if(!track){
+                            track = [];
+                        }
+                        var modal =  $('#data-track-modal');
+                        var op={
+                            'ADD':'新增',
+                            'UPDATE':'修改'
+                        }
+                        modal.find('#data-track-list-ul').empty();
+                        for(var index in track){
+                            var t = track[index];
+                            modal.find('#data-track-list-ul').append('<li>'
+                            +'<b>操作：</b>'+op[t.operation]+'<br/>'
+                            +'<b>数据：</b>'+t.data+'<br/>'
+                            +'<b>操作者：</b>'+t.operator+'<br/>'
+                            +'<b>修改时间：</b>'+t.timestamp+'<br/>'
+                            +'</li>');
+                        }
+                        modal.modal('show');
+                    }else{
+                        alert('网络繁忙，稍后重试'); 
+                    }
+                })
+            },
+            get_data_proof_by_date:function(data_date){
+                var comp = this;
+                chart.$http.get('/get_data_proof_by_date',{
+                    params:{
+                        project_id:this.table.project_id,
+                        indicator_id:this.table.indicator_id,
+                        data_date:data_date
+                    }
+                }).then(function(res){
+                    if(res.body.error_code == 'OK'){
+                        var proof_list = res.body.result.proof;
+                        if(!proof_list){
+                            proof_list=[]; 
+                        }
+                        var modal = $('#data-proof-modal');
+                        modal.find('#data-proof-list-ul').empty();
+                        for(var index in proof_list){
+                            var p = proof_list[index]; 
+                            $('#data-proof-list-ul').append('<li><a href="'+p
+                            +'">'+p.split('/').pop()
+                            +'</a></li>'); 
+                        }
+                        modal.modal('show');
+                    }else{
+                        alert('网络繁忙，稍后重试'); 
+                    }
+                })
             }
         }
     }

@@ -21,6 +21,7 @@ import CompanyProjectItem from '../components/company_project_item.vue'
         el:'#company-root-component',
         data:{
             project_info_list:[] ,
+            company_id:"",
             // inherit_type:"no",
             // project_name: "",
             // project_desc: "",
@@ -33,6 +34,7 @@ import CompanyProjectItem from '../components/company_project_item.vue'
             emulateHTTP: true
         },
         created:function(){
+            this.company_id = config.GetURLParameter('company_id');
             this.fetch_project_list()
         },
         components:{
@@ -41,9 +43,9 @@ import CompanyProjectItem from '../components/company_project_item.vue'
         methods:{
             fetch_project_list:function(){
                 var project_id = config.GetURLParameter('project_id');
-                var company_id = config.GetURLParameter('company_id');
+                // var company_id = config.GetURLParameter('company_id');
                 var data = {
-                    company_id:company_id
+                    company_id:this.company_id
                 }
                 if (project_id){
                     data.project_id=project_id
@@ -57,11 +59,11 @@ import CompanyProjectItem from '../components/company_project_item.vue'
             },
             redirect_to_create:function(){
                 var parent_id = config.GetURLParameter('parent_id');
-                var company_id = config.GetURLParameter('company_id');
+                // var company_id = config.GetURLParameter('company_id');
                 if (parent_id){
-                    window.location.href="/create_project?company_id="+company_id+"&parent_id="+parent_id;
+                    window.location.href="/create_project?company_id="+this.company_id+"&parent_id="+parent_id;
                 }else{
-                    window.location.href="/create_project?company_id="+company_id;
+                    window.location.href="/create_project?company_id="+this.company_id;
                 }
 
                  
@@ -82,6 +84,34 @@ import CompanyProjectItem from '../components/company_project_item.vue'
             }
         }
         
+    });
+
+
+    //结束公司
+    $('#end-company-btn').on('click',function(){
+        if(!confirm('结束监管将结束公司下所有项目，确认结束公司?')){
+            return; 
+        }
+        var e = $(this);
+        $.ajax({
+            type: "POST",
+            url:'/end_company',
+            data: {
+                company_id:root.company_id,
+            },
+            success: function (json) {
+                config.parsebody(json,function(ret){
+                    alert('结束成功!');
+                    // e.replaceWith('<button type="button" class="btn btn-default">已结束</button>');
+                    window.location.href=window.location.href;
+                });
+    
+            },
+            error: function () {
+                console.log('网络繁忙，稍后重试');
+            }
+        }); 
+
     });
 
 

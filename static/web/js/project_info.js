@@ -309,22 +309,24 @@ import IndicatorItem from '../components/indicator_transplant_item.vue'
                             $('#project-indicator-box .overlay').hide();
                         })
                     }) 
+            },
+            start_project:function(){
+                var comp = this;
+                this.$http.post('/start_project',{
+                    project_id:this.project_id 
+                })
+                    .then(function(res){
+                        config.parsebody(res.body,function(){
+                            comp.fetch_indicator_list();
+                            $('#project-indicator-box .overlay').hide();
+                        })
+                    }) 
             }
         }
         
     });
     window.root=root;
 
-    // $('#excel-import-indicator-btn').on('click',function(){
-    //     $('#excel-import-indicator-modal').modal('show'); 
-    // });
-    // $(document).on('change', '#indicator-excel-file-input', function() {
-    //     var input = $(this),
-    //         numFiles = input.get(0).files ? input.get(0).files.length : 1,
-    //         label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-    //     // console.log(label);
-    //     $('#indicator-excel-name').val(label);
-    // });
     
     window.onload = function(){
         //调用接口获取新值
@@ -535,6 +537,56 @@ import IndicatorItem from '../components/indicator_transplant_item.vue'
     });
     $('#project-board-modal #cancel-update').on('click',function(){
         $('#project-board-modal').modal('hide'); 
+    });
+
+    $('#start-project-btn').on('click',function(){
+        if(!confirm('确认开启项目?')){
+            return; 
+        }
+        var e = $(this);
+        $.ajax({
+            type: "POST",
+            url:'/start_project',
+            data: {
+                project_id:root.project_id,
+            },
+            success: function (json) {
+                config.parsebody(json,function(ret){
+                    alert('开启成功');
+                    e.replaceWith('<button id="end-project-btn" type="button" class="btn btn-success">结束项目</button>');
+                });
+    
+            },
+            error: function () {
+                console.log('网络繁忙，稍后重试');
+            }
+        }); 
+
+    });
+    $('body').on('click','#end-project-btn',function(){
+        if(!confirm('确认结束项目?')){
+            return; 
+        }
+        var e = $(this);
+        $.ajax({
+            type: "POST",
+            url:'/end_project',
+            data: {
+                project_id:root.project_id,
+            },
+            success: function (json) {
+                config.parsebody(json,function(ret){
+                    alert('结束成功');
+                    // e.replaceWith('<button type="button" class="btn btn-default">已结束</button>');
+                    window.location.href=window.location.href;
+                });
+    
+            },
+            error: function () {
+                console.log('网络繁忙，稍后重试');
+            }
+        }); 
+
     });
 
 })(this);

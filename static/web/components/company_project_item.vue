@@ -6,8 +6,8 @@
         <div class="product-info">
             <span class="product-title"><a :href="item.home_addr"> {{item.project_name}}</a>
                 <!-- <span class="label label&#45;warning pull&#45;right">$1800</span> -->
-                <button v-on:click="del_project" class="btn btn-xs btn-danger pull-right">删除</button>
-                <button v-on:click="redirect_to_update" class="btn btn-xs btn-primary pull-right" style="margin-right:10px;">编辑</button>
+                <button v-on:click="del_project" class="btn btn-xs btn-danger pull-right life-status">删除</button>
+                <button v-on:click="redirect_to_update" class="btn btn-xs btn-primary pull-right life-status" style="margin-right:10px;">编辑</button>
             </span>
             <span class="product-description">
                 {{item.project_desc}}

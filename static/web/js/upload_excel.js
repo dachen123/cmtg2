@@ -189,15 +189,16 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
         var input = $('#indicator-expect-excel-file-input'); 
         if(!input.get(0).files.length > 0){
             alert('请先选择需要上传的文件');
+            $('#excel-import-expects .overlay').hide();
             return;
         }
         var formData = new FormData();
 
         var sheet_name_str = $('#expect-sheet-name-input').val();
-        var sheet_name_list = sheet_name_str.split('；');
-        if(sheet_name_list.length <= 0){
-            sheet_name_list = sheet_name_str.split(';');
-        }
+        var sheet_name_list = sheet_name_str.split(/；|;/);
+        // if(sheet_name_list.length <= 0){
+        //     sheet_name_list = sheet_name_str.split(';');
+        // }
         var sheet_title_num = $('#expect-sheet-title-num').val();
 
         var errorband = $('#expect-errorband-input').val();
