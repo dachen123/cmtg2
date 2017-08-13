@@ -28,6 +28,8 @@ import HomeLpmItem from '../components/home_latest_pm.vue'
             from_me_aevents:[],
             project_info_list:[],
             to_me_aevent_id:'',
+            indicator_start_index:1,
+            indicator_count:12
         },
         http:{
             emulateJSON: true,
@@ -49,11 +51,65 @@ import HomeLpmItem from '../components/home_latest_pm.vue'
         },
         methods:{
             fetch_urgent_indicator:function(){
-                this.$http.get('/get_unsolved_indicator',{})
+                this.$http.get('/get_unsolved_indicator',{
+                    params:{
+                        start_index:this.indicator_start_index,
+                        count:this.indicator_count
+                    
+                    }
+                })
                     .then(function(res){
                         this.urgent_indicator_list = res.body.result.indicator_info_list
                     }) 
             }, 
+            prev_page_indicator:function(){
+                if(this.indicator_start_index == 1){
+                    alert('已经在第一页了');
+                    return
+                }
+                var prev_start_index = this.indicator_start_index - this.indicator_count;
+                if(prev_start_index < 1){
+                    this.indicator_start_index = prev_start_index;
+                }else{
+                    this.indicator_start_index = prev_start_index; 
+                }
+                this.$http.get('/get_unsolved_indicator',{
+                    params:{
+                        start_index:this.indicator_start_index,
+                        count:this.indicator_count
+                    }
+                })
+                    .then(function(res){
+                        var r = config.parsebody(res.body);
+                        if(r){
+                            this.urgent_indicator_list = res.body.result.indicator_info_list
+                        }
+                    }) 
+
+            },
+            next_page_indicator:function(){
+                var next_page_start = this.indicator_start_index + this.indicator_count;
+                this.$http.get('/get_unsolved_indicator',{
+                    params:{
+                        start_index:next_page_start,
+                        count:this.indicator_count
+                    }
+                })
+                    .then(function(res){
+                        var r = config.parsebody(res.body);
+                        if(r){
+                            var indicator_list = res.body.result.indicator_info_list;
+                            if(indicator_list.length > 0){
+                                this.urgent_indicator_list = indicator_list;
+                                this.indicator_start_index = next_page_start;
+                            }
+                            else{
+                            
+                                alert('没有更多的数据了');
+                            }
+                        }
+                    }) 
+            },
             fetch_company_list:function(){
                 this.$http.get('/get_company_list',{})
                     .then(function(res){

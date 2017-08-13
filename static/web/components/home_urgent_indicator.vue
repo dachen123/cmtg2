@@ -6,7 +6,11 @@
             <i class="fa fa-ellipsis-v"></i>
         </span>
         <!-- todo text -->
-        <span class="text">{{item.indicator_name}}有未处理事件</span>
+    
+    
+    
+    
+        <span class="text" style="text-overflow: ellipsis;overflow: hidden;max-width: 70%;white-space: nowrap;">{{item.indicator_name}}有未处理事件</span>
         <!-- General tools such as edit or delete-->
         <div class="pull-right">
             <button v-on:click="get_indicator_aevent" type="button" class="btn btn-sm btn-danger" style="margin-top: -5px;">查看详情</button>

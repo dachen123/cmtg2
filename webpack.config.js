@@ -8,6 +8,7 @@ module.exports = {
         create_project:'./static/web/js/create_project.js',
         create_company:'./static/web/js/create_company.js',
         update_company:'./static/web/js/update_company.js',
+        update_company_attr:'./static/web/js/update_company_attr.js',
         company_info:'./static/web/js/company_info.js',
         create_index:'./static/web/js/create_index.js',
         edit_project:'./static/web/js/edit_project.js',

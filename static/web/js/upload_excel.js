@@ -88,6 +88,7 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
             alert('请先选择需要解析的文件');
             return;
         }
+        $('#excel-import-indicator .overlay').show();
         $('#indicator-excel-name').val(label);
         var indicator_position = $('#indicator-name-position').val();
         var sheet_name_str = $('#sheet-name-input').val();
@@ -112,8 +113,12 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
                     root.set_indicator_list(result);
                 });
                 input.val('');
+                $('#indicator-excel-name').val('');
+                $('#excel-import-indicator .overlay').hide();
             },
             error: function () {
+                $('#excel-import-indicator .overlay').hide();
+                window.location.href=window.location.href;
             }
         }); 
 
@@ -163,10 +168,12 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
                     alert('导入成功!'); 
                 });
                 $('#excel-import-indicator-data .overlay').hide();
+                window.location.href=window.location.href;
             },
             error: function () {
                 alert('网络错误，请重试');
                 $('#excel-import-indicator-data .overlay').hide();
+                window.location.href=window.location.href;
             }
         }); 
     });
@@ -224,10 +231,12 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
                     alert('导入成功!'); 
                 });
                 $('#excel-import-expects .overlay').hide();
+                window.location.href=window.location.href;
             },
             error: function () {
                 alert('网络错误，请重试');
                 $('#excel-import-expects .overlay').hide();
+                window.location.href=window.location.href;
             }
         }); 
     });
