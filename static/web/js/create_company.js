@@ -205,10 +205,10 @@ import { config } from './common.js'
                     return ;
                 }
                 if (this.person == 'leader'){
-                    root.leader = $.extend(root.leader,data);
+                    root.leader = $.extend(true,root.leader,data);
                     $('#trigger-add-leader').html(this.user_name);
                     if(!root.contact.user_name){
-                        root.contact = $.extend(root.leader,data);
+                        root.contact = $.extend(true,root.contact,data);
                         $('#trigger-add-contact').html(this.user_name);
                     }
                 }else if(this.person == 'contact'){

@@ -50,10 +50,11 @@ import AttrItem from '../components/company_attr_item.vue'
             create_company_attr:function(){
                 var attr_info = {
                     attr_id:"",
+                    input_type:"string",
                     attr_name:"",
                     attach_value:""
                 }
-                eventBus.$emit('show_data',user_info,'create',this.classify);
+                eventBus.$emit('show_data',attr_info,'create');
             },
             del_company_attr:function(attr){
                 if(!confirm('确认删除公司属性？')){
