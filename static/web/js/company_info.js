@@ -129,14 +129,7 @@ import CompanyProjectItem from '../components/company_project_item.vue'
                               
 
     function input_html(attr_id,input_type,attr_name,attach_value,data){
-        if (input_type != 'enum'){
-            var html_str = '<div class="form-group company-attr clear-float">'
-                +'<label class="col-sm-3 control-label">'+attr_name
-                +'：</label><div class="col-sm-9"><input data-attr_id="'
-                + attr_id + '" type="'+input_type+'" '
-                +'class="form-control company-attr-input" value="'
-                + (data || '')+'" style="border:0px;" disabled></div></div>'
-        }else{
+        if( input_type =='enum'){
             var option_str = ''
             if(attach_value instanceof Array){
                 for (var index in attach_value){
@@ -154,12 +147,32 @@ import CompanyProjectItem from '../components/company_project_item.vue'
             var html_str = '<div class="form-group company-attr clear-float">'
                 +'<label class="col-sm-3 control-label">'+attr_name+'：</label>'
                 +'<div class="col-sm-9">'
-                +'<select style="border:0px;" disabled data-attr_id="'
+                +'<select style="display:none;" data-attr_id="'
                 + attr_id +'" class="form-control company-attr-input" >'
                 + option_str
                 +'</select>'
+                +'<p class="form-control attr-text-p" style="background-color:#EEEEEE;border:0px;height:auto;min-height:32px;">'+data+'</p> '
                 +'</div>'
                 +'</div>'
+        }else if( input_type == 'string'){
+            var html_str = '<div class="form-group company-attr clear-float">'
+                +'<label class="col-sm-3 control-label">'+attr_name
+                +'：</label><div class="col-sm-9"><textarea data-attr_id="'
+                + attr_id + '" type="'+input_type+'" '
+                +'class="form-control company-attr-input" value="'
+                + (data || '')+'" style="display:none;"></textarea>'
+                +'<p class="form-control attr-text-p" style="background-color:#EEEEEE;border:0px;height:auto;min-height:32px;">'+data+'</p> '
+                +'</div></div>'
+        
+        }else{
+            var html_str = '<div class="form-group company-attr clear-float">'
+                +'<label class="col-sm-3 control-label">'+attr_name
+                +'：</label><div class="col-sm-9"><input data-attr_id="'
+                + attr_id + '" type="'+input_type+'" '
+                +'class="form-control company-attr-input" value="'
+                + (data || '')+'" style="display:none;">'
+                +'<p class="form-control attr-text-p" style="background-color:#EEEEEE;border:0px;height:auto;min-height:32px;">'+data+'</p> '
+                +'</div></div>'
         }
         return html_str;
     }
@@ -227,20 +240,27 @@ import CompanyProjectItem from '../components/company_project_item.vue'
             root.fetch_project_list();
         }else{
             get_company_attr_info(root.company_id); 
+            $('#cancel-edit-attr').replaceWith('<button id="edit-company-attr" type="button" class="btn btn-default pull-right" style="margin-right:5px;">编辑属性</button>');
         }
     });
 
     $('body').on('click','#edit-company-attr',function(){
         $('#company-attr-list .company-attr-input').each(function(){
             $(this).css('border','1px solid #d2d6de');
-            $(this).removeAttr('disabled');
+            // $(this).removeAttr('disabled');
+            $(this).show(); 
+            $(this).val($(this).next().html());
+            $(this).next().hide();
         });
         $(this).replaceWith('<button id="cancel-edit-attr" type="button" class="btn btn-success pull-right" style="margin-right:5px;">编辑取消</button>');
     });
     $('body').on('click','#cancel-edit-attr',function(){
         $('#company-attr-list .company-attr-input').each(function(){
-            $(this).css('border','0px');
-            $(this).attr('disabled','disabled');
+            // $(this).css('border','0px');
+            // $(this).attr('disabled','disabled');
+            $(this).hide(); 
+            $(this).next().html($(this).val());
+            $(this).next().show();
         });
         $(this).replaceWith('<button id="edit-company-attr" type="button" class="btn btn-default pull-right" style="margin-right:5px;">编辑属性</button>');
 
