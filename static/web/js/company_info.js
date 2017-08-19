@@ -252,7 +252,7 @@ import CompanyProjectItem from '../components/company_project_item.vue'
             $(this).val($(this).next().html());
             $(this).next().hide();
         });
-        $(this).replaceWith('<button id="cancel-edit-attr" type="button" class="btn btn-success pull-right" style="margin-right:5px;">编辑取消</button>');
+        $(this).replaceWith('<button id="cancel-edit-attr" type="button" class="btn btn-success pull-right" style="margin-right:5px;">编辑预览</button>');
     });
     $('body').on('click','#cancel-edit-attr',function(){
         $('#company-attr-list .company-attr-input').each(function(){
@@ -262,7 +262,7 @@ import CompanyProjectItem from '../components/company_project_item.vue'
             $(this).next().html($(this).val());
             $(this).next().show();
         });
-        $(this).replaceWith('<button id="edit-company-attr" type="button" class="btn btn-default pull-right" style="margin-right:5px;">编辑属性</button>');
+        $(this).replaceWith('<button id="edit-company-attr" type="button" class="btn btn-default pull-right" style="margin-right:5px;">编辑预览</button>');
 
     });
 

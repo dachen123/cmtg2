@@ -46,12 +46,28 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
             set_indicator_list(data){
                 this.indicator_list = data.indicator_list; 
             },
+            item_has_null:function(item){
+                if($.AdminLTE.utils.isNull(item.item.indicator_property)){
+                    alert('请选择指标 "'+item.item.indicator_name+'" 的指标属性！');
+                    return true;
+                }else if($.AdminLTE.utils.isNull(item.board)){
+                    alert('请选择指标 "'+item.item.indicator_name+'" 的所属版块！');
+                    return true;
+                }else if($.AdminLTE.utils.isNull(item.item.collect_period)){
+                    alert('请选择指标 "'+item.item.indicator_name+'" 的采集周期！');
+                    return true;
+                }else{
+                    return false;
+                } 
+            },
             batch_import_indicator(){
-                $('#excel-import-indicator .overlay').show();
                 var child_list = this.$refs;
                 var indicator_list = [];
                 for( var index in child_list.index){
                     var i = child_list.index[index]; 
+                    if(this.item_has_null(i)){
+                        return;
+                    };
                     var i_d = {
                         'indicator_name':i.item.indicator_name,
                         'indicator_property':i.item.indicator_property,
@@ -61,6 +77,7 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
                     }
                     indicator_list.push(i_d);
                 }
+                $('#excel-import-indicator .overlay').show();
                 this.$http.post('/batch_import_indicator',{
                     indicator_list:JSON.stringify(indicator_list)
                 })
@@ -125,6 +142,19 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
     });
 
     //导入指标数据部分
+    var default_time = moment().local().hours(0).minutes(0).seconds(0);
+
+    $('#i-data-datetimepicker').datetimepicker({
+        locale: 'zh-cn',
+        format: 'MM/DD/YYYY',
+        allowInputToggle:true,
+        widgetPositioning:{
+            horizontal: 'left',
+            vertical: 'bottom'
+        },
+        defaultDate:default_time
+    });
+    
     $(document).on('change', '#i-data-excel-file-input', function() {
         var input = $(this),
             numFiles = input.get(0).files ? input.get(0).files.length : 1,
@@ -241,6 +271,7 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
         }); 
     });
 
+    //勾稽关系预检查
     $('#precheck-gouji-btn').on('click',function(){
         $('#excel-import-indicator-data .overlay').show();
         var data_time = $('#i-data-datetimepicker').data('DateTimePicker').date().unix();
@@ -273,6 +304,64 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
 
         
     });
+
+
+    //银行流水数据导入
+   //多选初始化 
+    $('#indicator-select').multiselect({
+        includeSelectAllOption: true,
+        enableFiltering: true,
+        buttonWidth: '100%',
+        nonSelectedText: '请选择指标',
+        numberDisplayed: 10,
+        selectAllText: '全选',
+        allSelectedText: '已选择所有指标'
+
+    });
+    //日期选择控件初始化
+    $('#bank-data-datetimepicker').datetimepicker({
+        locale: 'zh-cn',
+        format: 'MM/DD/YYYY',
+        allowInputToggle:true,
+        widgetPositioning:{
+            horizontal: 'left',
+            vertical: 'bottom'
+        },
+        defaultDate:default_time
+    });
+    $(document).on('change', '#bank-data-excel-file-input', function() {
+        var input = $(this),
+            numFiles = input.get(0).files ? input.get(0).files.length : 1,
+            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+        $('#bank-data-excel-name').val(label);
+
+    });
+    //调用接口获取指标列表
+    $.ajax({
+        url:'/get_indicator_list_by_condition',
+        type: "GET",
+        data: {
+            project_id:root.project_id,
+            forum_id:root.board_id
+        },
+        success: function (json) {
+            var elem = $('#indicator-select');
+            //判断元素是否存在
+            if(elem.length > 0){
+                elem.empty(); //清空原有的
+                var i_list = json.result.indicator_info_list;
+                for (var index in i_list){
+                    elem.append("<option value='"+i_list[index].indicator_id+"'>"+i_list[index].indicator_name+"</option>");  //添加一项option
+                }
+                elem.get(0).selectedIndex=0;  //设置Select索引值为1的项选中 
+                $('#indicator-select').multiselect('rebuild');
+            }
+
+        },
+        error: function () {
+            console.log('网络出错!');
+        }
+    }); 
 
 })(this);
 

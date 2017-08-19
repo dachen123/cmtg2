@@ -67,6 +67,19 @@ import AttrItem from '../components/company_attr_item.vue'
                     .then(function(res){
                         _m.get_company_attr_list()
                     }) 
+            },
+            rank_company_attr:function(attr,rank_dir){
+                var _m = this;
+                this.$http.post('/rank_company_attr',{
+                    attr_id: attr.attr_id,
+                    rank_dir:rank_dir
+                })
+                    .then(function(res){
+                        var r = config.parsebody(res.body,function(result){
+                            _m.get_company_attr_list()
+                        })
+                    }) 
+
             }
 
         }

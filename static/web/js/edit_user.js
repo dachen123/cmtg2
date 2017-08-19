@@ -77,6 +77,9 @@ import UserItem from '../components/user_item.vue'
                 eventBus.$emit('show_data',user_info,'create',this.classify);
             },
             del_user:function(user){
+                if(!confirm('确认删除该用户?')){
+                    return;
+                }
                 var _m = this;
                 this.$http.post('/delete_user',{
                     user_id: user.user_id

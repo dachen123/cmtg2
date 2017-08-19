@@ -5,7 +5,11 @@
         <td>{{attach_value_text(item.attach_value)}}</td>
         <td>
             <button v-on:click="trans_data" class="btn btn-xs btn-primary" style="margin-right:5px;">编辑</button>
-            <button v-on:click="del_company_attr"  class="btn btn-xs btn-danger" >删除</button></td>
+            <button v-on:click="del_company_attr"  class="btn btn-xs btn-danger" >删除</button>
+            <span v-on:click="rank_company_attr('up')" class="glyphicon glyphicon-arrow-up" style="display:inline-block;margin-left:10px;cursor:pointer;"></span>
+            <span v-on:click="rank_company_attr('down')" class="glyphicon glyphicon-arrow-down" style="display:inline-block;margin-left:10px;cursor:pointer;"></span>
+        </td>
+
     </tr>
 
     <!-- /.item -->
@@ -41,6 +45,9 @@
                 }else{
                     return attach_value; 
                 }
+            },
+            rank_company_attr:function(rank_dir){
+                this.$emit('rank_company_attr',this.item,rank_dir);
             }
         }
         

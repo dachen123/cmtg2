@@ -321,7 +321,10 @@ import IndicatorItem from '../components/indicator_transplant_item.vue'
                             $('#project-indicator-box .overlay').hide();
                         })
                     }) 
-            }
+            },
+            show_export_template_modal:function(){
+                $('#export-template-modal').modal('show');
+            },
         }
         
     });
@@ -589,5 +592,106 @@ import IndicatorItem from '../components/indicator_transplant_item.vue'
 
     });
 
+    //date-ranger
+    var startDate = moment().local().format('MM/DD/YYYY');
+    var endDate = moment().local().add( moment.duration(1,'months'));
+    var endDate = endDate.format('MM/DD/YYYY');
+     
+    $('#daterange-input').daterangepicker({
+        "showDropdowns": true,
+        "autoApply": true,
+        "locale": {
+            "format": "MM/DD/YYYY",
+            "separator": " - ",
+            "applyLabel": "确定",
+            "cancelLabel": "取消",
+            "fromLabel": "从",
+            "toLabel": "到",
+            "customRangeLabel": "Custom",
+            "weekLabel": "W",
+            "daysOfWeek": [
+                "日",
+                "一",
+                "二",
+                "三",
+                "四",
+                "五",
+                "六"
+            ],
+            "monthNames": [
+                "一月",
+                "二月",
+                "三月",
+                "四月",
+                "五月",
+                "六月",
+                "七月",
+                "八月",
+                "九月",
+                "十月",
+                "十一月",
+                "十二月"
+            ],
+            "firstDay": 1
+        },
+        "startDate": startDate,
+        "endDate": endDate
+    }, function(start, end, label) {
+        startDate = start.format('MM/DD/YYYY');
+        endDate = end.format('MM/DD/YYYY');
+    });
+
+
+    $('#export-template-btn').on('click',function(){
+        event.preventDefault();
+        var download_url = '/export_template_xls?start_time='+startDate+'&end_time='+endDate;
+        window.downloadFile(download_url);
+
+    });
+    
+
 })(this);
+
+window.downloadFile = function (sUrl) {
+
+    //iOS devices do not support downloading. We have to inform user about this.
+    if (/(iP)/g.test(navigator.userAgent)) {
+       //alert('Your device does not support files downloading. Please try again in desktop browser.');
+       window.open(sUrl, '_blank');
+       return false;
+    }
+
+    //If in Chrome or Safari - download via virtual link click
+    if (window.downloadFile.isChrome || window.downloadFile.isSafari) {
+        //Creating new link node.
+        var link = document.createElement('a');
+        link.href = sUrl;
+        link.setAttribute('target','_blank');
+
+        if (link.download !== undefined) {
+            //Set HTML5 download attribute. This will prevent file from opening if supported.
+            var fileName = sUrl.substring(sUrl.lastIndexOf('/') + 1, sUrl.length);
+            link.download = fileName;
+        }
+
+        //Dispatching click event.
+        if (document.createEvent) {
+            var e = document.createEvent('MouseEvents');
+            e.initEvent('click', true, true);
+            link.dispatchEvent(e);
+            return true;
+        }
+    }
+
+    // Force file download (whether supported by server).
+    if (sUrl.indexOf('?') === -1) {
+        sUrl += '?download';
+    }
+
+    window.open(sUrl, '_blank');
+    return true;
+}
+
+window.downloadFile.isChrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+window.downloadFile.isSafari = navigator.userAgent.toLowerCase().indexOf('safari') > -1;
 
