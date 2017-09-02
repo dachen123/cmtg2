@@ -644,7 +644,10 @@ import IndicatorItem from '../components/indicator_transplant_item.vue'
 
     $('#export-template-btn').on('click',function(){
         event.preventDefault();
-        var download_url = '/export_template_xls?start_time='+startDate+'&end_time='+endDate;
+        var download_url = '/export_data_template_xls?project_id='+root.project_id+'&start_time='+startDate+'&end_time='+endDate;
+        if( root.board_id > 0){
+            download_url += '&board_id=' + root.board_id; 
+        }
         window.downloadFile(download_url);
 
     });

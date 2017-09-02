@@ -20,6 +20,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             read_interface:"false",
             indicator_name:"",
             indicator_property:"",
+            indicator_desc:"",
             forum:"",
             collect_period:"",
             project_id:"",
@@ -51,6 +52,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             is_durative:"false",
             indicator_map:{},
             indicator_map_reverse:{},
+            alert_message:""
         },
         http:{
             emulateJSON: true,
@@ -184,6 +186,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                 var data = {
                     read_interface:this.read_interface,
                     indicator_name:this.indicator_name,
+                    indicator_desc:this.indicator_desc,
                     indicator_property:this.indicator_property,
                     project_id:this.project_id,
                     forum:this.forum,
@@ -234,6 +237,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                     indicator_id:this.indicator_id,
                     read_interface:this.read_interface,
                     indicator_name:this.indicator_name,
+                    indicator_desc:this.indicator_desc,
                     indicator_property:this.indicator_property,
                     project_id:this.project_id,
                     forum:this.forum,
@@ -253,6 +257,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                     var indicator_info = r.body.result.indicator_info;
                     this.read_interface=indicator_info.read_interface;
                     this.indicator_name=indicator_info.indicator_name;
+                    this.indicator_desc=indicator_info.description;
                     this.indicator_property=indicator_info.indicator_property;
                     this.forum=indicator_info.forum.board_id;
                     this.collect_period=indicator_info.collect_period;
@@ -304,6 +309,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                     var indicator_info = res.body.result.indicator_info;
                     this.read_interface=indicator_info.read_interface;
                     this.indicator_name=indicator_info.indicator_name,
+                    this.indicator_desc=indicator_info.description;
                     this.indicator_property=indicator_info.indicator_property,
                     this.forum=indicator_info.forum.board_id,
                     this.collect_period=indicator_info.collect_period,
@@ -467,6 +473,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                         statistic_style:this.statistic_style,
                         compare_target:this.compare_target,
                         compare_period:this.compare_period,
+                        message:this.alert_message,
                         errorband:errorband,
                         errorband_flag:this.errorband_flag,
                         delay_days:this.delay_days,
@@ -543,6 +550,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                 }
                 this.compare_mode = rule_info.compare_mode;
                 this.delay_days = rule_info.delay_days;
+                this.alert_message = rule_info.message;
                 if (this.compare_target == 'indicator'){
                     this.get_indicator_cascader_select_val(rule_info.related_indicator_id);
                 }

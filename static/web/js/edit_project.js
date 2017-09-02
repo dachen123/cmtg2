@@ -19,6 +19,7 @@ import { config } from './common.js'
             project_type:'default',
             leader_id:"",
             contact_id:"",
+            create_user_id:"",
             inherit_type:"no",
             parent_id:"",
             error_msg:"",
@@ -42,6 +43,7 @@ import { config } from './common.js'
                     this.project_desc = project_info.project_desc;
                     this.project_type = project_info.project_type;
                     this.leader_id = project_info.leader.user_id;
+                    this.create_user_id = project_info.create_user.user_id;
                     this.contact_id  = project_info.contact.user_id;
                     this.parent_id = project_info.parent_project_id;
                     $('#p-create-datetimepicker').data('DateTimePicker').date(moment.unix(project_info.project_create_time));
@@ -81,6 +83,7 @@ import { config } from './common.js'
                     project_type:this.project_type,
                     leader_id:this.leader_id,
                     contact_id:this.contact_id,
+                    create_user_id:this.create_user_id,
                     project_create_time:p_create_time,
                     project_end_time:p_end_time,
                     company_id:company_id,

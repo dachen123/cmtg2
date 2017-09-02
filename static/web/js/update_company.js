@@ -17,6 +17,7 @@ import { config } from './common.js'
             company_desc:"",
             leader_id : "",
             contact_id: "",
+            create_user_id:"",
             error_msg: ""
         },
         http:{
@@ -55,6 +56,7 @@ import { config } from './common.js'
                         _m.company_image = c.company_image;
                         _m.leader_id = c.leader.user_id;
                         _m.contact_id = c.contact.user_id;
+                        _m.create_user_id = c.create_user.user_id;
                         for( var index in c.committee){
                             var o = c.committee[index]; 
                             $('#participant-select').multiselect('select',o.user_id);
@@ -80,8 +82,8 @@ import { config } from './common.js'
                     company_image:this.company_image,
                     leading_official:this.leader_id,
                     contact:this.contact_id,
-                    participant:JSON.stringify(participant)
-                
+                    participant:JSON.stringify(participant),
+                    create_user_id:this.create_user_id
                 }
                 this.$http.post('/update_company',data
                 ).then(function(r){

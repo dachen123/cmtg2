@@ -43,7 +43,7 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
         watch:{
         },
         methods:{
-            set_indicator_list(data){
+            set_indicator_list:function(data){
                 this.indicator_list = data.indicator_list; 
             },
             item_has_null:function(item){
@@ -60,7 +60,7 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
                     return false;
                 } 
             },
-            batch_import_indicator(){
+            batch_import_indicator:function(){
                 var child_list = this.$refs;
                 var indicator_list = [];
                 for( var index in child_list.index){
@@ -362,6 +362,47 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
             console.log('网络出错!');
         }
     }); 
+
+    $('#upload-bank-data-btn').on('click',function(){
+        if( !confirm('确认提交?')){
+            return; 
+        }
+        var input = $('#bank-data-excel-file-input'); 
+        if(!input.get(0).files.length > 0){
+            alert('请先选择需要上传的文件');
+            return;
+        }
+        $('#excel-import-bank-statement .overlay').show();
+        var formData = new FormData();
+        var data_time = $('#bank-data-datetimepicker').data('DateTimePicker').date().format('MM/DD/YYYY');
+        var indicator_id = $('#indicator-select').val();
+        var bankname = $('#bank-name-input').val();
+        
+        formData.append('file', input.get(0).files[0]);
+        formData.append('project_id', root.project_id);
+        formData.append('bankname',bankname);
+        formData.append('data_time', data_time);
+        formData.append('indicator_id', indicator_id);
+
+        $.ajax('/import_bank_statement', {
+            method: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (json) {
+                var r = config.parsebody(json,function(){
+                    alert('导入成功,您可以联系审核人审核上传数据!'); 
+                });
+                $('#excel-import-bank-statement .overlay').hide();
+                window.location.href=window.location.href;
+            },
+            error: function () {
+                alert('网络错误，请重试');
+                $('#excel-import-bank-statement .overlay').hide();
+                window.location.href=window.location.href;
+            }
+        }); 
+    });
 
 })(this);
 

@@ -86,11 +86,17 @@ import CompanyProjectItem from '../components/company_project_item.vue'
                 if( !confirm('初始化公司将从模板创建项目，是否继续?')){
                     return 
                 }
+                $('#company-info-box .overlay').show();
                 this.$http.post('/init_company',{
                     company_id:this.company_id 
                 })
                     .then(function(res){
-                        alert('初始化成功，成功创建模板项目');
+                        if(res.body.error_code == 'OK'){
+                            alert('初始化成功，成功创建模板项目');
+                            $('#company-info-box .overlay').hide();
+                        }else{
+                            alert(res.body.message); 
+                        }
                     }) 
             
             }

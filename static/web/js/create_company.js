@@ -15,12 +15,39 @@ import { config } from './common.js'
             company_name:"",
             company_image:"",
             company_desc:"",
+            select_leader:"",
+            select_contact:"",
+            leader_type:"new",
+            contact_type:"new",
             leader : {},
             contact: {}
         },
         http:{
             emulateJSON: true,
             emulateHTTP: true
+        },
+        watch:{
+
+            leader_type:function(val){
+                if(val=='select_exist'){
+                    $('#company-leader-select').show();
+                    $('#trigger-add-leader').hide();
+
+                }else{
+                    $('#company-leader-select').hide();
+                    $('#trigger-add-leader').show();
+                }
+            },
+            contact_type:function(val){
+                if(val=='select_exist'){
+                    $('#company-contact-select').show();
+                    $('#trigger-add-contact').hide();
+
+                }else{
+                    $('#company-contact-select').hide();
+                    $('#trigger-add-contact').show();
+                }
+            }
         },
         methods:{
             post_new_company:function(){
@@ -32,18 +59,27 @@ import { config } from './common.js'
                     alert('请输入公司描述'); 
                     return;
                 }
-                if(!this.leader.user_name){
+                if(this.leader_type == 'new' && !this.leader.user_name){
                     alert('请输入公司负责人'); 
                     return;
                 
                 }
-                if(!this.contact.user_name){
+                if(this.contact_type == 'new' &&!this.contact.user_name){
                     alert('请输入公司联系人'); 
+                    return;
+                }
+                if( this.leader_type == 'select_exist' && this.select_leader == ""){
+                    alert('请选择被投公司负责人');
+                    return;
+                }
+                if( this.contact_type == 'select_exist' && this.select_contact == ""){
+                    alert('请选择被投公司负责人');
                     return;
                 }
                 var participant = $('#participant-select').val();
                 if( !(participant && participant.length > 0)){
                     alert('请输入公司参与人');
+                    return;
                 }
                 $('#create-company-box .overlay').show();
                 var data = {
@@ -69,7 +105,12 @@ import { config } from './common.js'
                     contact_sex:this.contact.sex,
                     contact_password:this.contact.user_password,
 
-                    participant:JSON.stringify(participant)
+                    participant:JSON.stringify(participant),
+
+                    leader_type:this.leader_type,
+                    contact_type:this.contact_type,
+                    select_leader:this.select_leader,
+                    select_contact:this.select_contact
                 
                 }
                 this.$http.post('/add_company_with_leader',data

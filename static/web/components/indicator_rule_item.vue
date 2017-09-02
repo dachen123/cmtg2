@@ -26,7 +26,9 @@ export default {
                 accumulate:"累计值",
                 mean      :"算术平均",
                 linkrelative:"环比",
-                yearbegin:"年初余额"
+                yearbegin:"年初余额",
+                bankdebit:"银行对账单流水单笔支出金额",
+                bankdebitlink:"银行对账单月支出总额环比增加额",
             },
             compare_mode:{
                 higher:"高于",
