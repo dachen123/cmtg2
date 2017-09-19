@@ -7,9 +7,14 @@
         <td>{{item.phone}}</td>
         <td>{{item.email}}</td>
         <td>{{item.company}}</td>
-        <td>
+        <td v-if="item.user_id==current_user_info.user_id || current_user_info.job_level=='super' || current_user_info.job_level=='partner'|| current_user_info.job_level=='admin'">
             <button v-on:click="trans_data" class="btn btn-xs btn-primary" style="margin-right:5px;">编辑</button>
-            <button v-on:click="del_user"  class="btn btn-xs btn-danger" >删除</button></td>
+            <button v-on:click="del_user"  class="btn btn-xs btn-danger" >删除</button>
+        </td>
+        <td v-else="item.user_id==current_user_info.user_id || current_user_info.job_level=='super' || current_user_info.job_level=='partner'">
+            <button v-on:click="trans_data" class="btn btn-xs btn-primary" style="margin-right:5px;" disabled>编辑</button>
+            <button v-on:click="del_user"  class="btn btn-xs btn-danger" disabled >删除</button>
+        </td>
     </tr>
 
     <!-- /.item -->
@@ -18,7 +23,7 @@
 
 <script>
     export default {
-        props:['item','index'],
+        props:['item','index','current_user_info'],
         data:function(){
             return{
                 job_level_text:{

@@ -77,6 +77,15 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             IndicatorRuleItem,
         },
         watch:{
+            forum:function(val){
+                var text = $('#index-forum-select option[value="'+val+'"]').text();
+                if (text == '资金安全性'){
+                    $('#create-hint-p').show(); 
+                }else{
+                    $('#create-hint-p').hide(); 
+                }
+
+            },
             errorband_flag:function(val){
                 if(val == 'true' || val == true){
                     $('#errorband-addon').hide(); 
@@ -146,6 +155,9 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             
         },
         methods:{
+            redirect_to_unverify_data:function(){
+                window.location.href = '/query_unverify_data?project_id='+this.project_id;
+            },
             get_indicator_list_for_map:function(callback){
                 var _m = this;
                 this.$http.get('/get_indicator_list_by_condition',{

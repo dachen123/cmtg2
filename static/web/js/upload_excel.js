@@ -31,6 +31,7 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
             this.project_id = config.GetURLParameter('project_id');
             this.board_id = config.GetURLParameter('board_id');
             this.$http.get('/get_board_list',{
+                params:{project_id:this.project_id}
             })
             .then(function(res){
                 this.board_list = res.body.result.board_list
@@ -177,6 +178,13 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
         var data_time = $('#i-data-datetimepicker').data('DateTimePicker').date().unix();
         var sheet_num = $('#upload_sheet_num').val();
         var sheet_name_str = $('#data-sheet-name-input').val();
+        var s_name_list = sheet_name_str.split(/；|;/);
+        var sheet_name_list =[];
+        for (var index in s_name_list){
+            if (s_name_list[index] !=""){
+                sheet_name_list.push(s_name_list[index]);
+            }
+        }
         var sheet_title_num = $('#data-sheet-title-num').val();
         var indicator_position = $('#i-name-position').val();
         
@@ -184,7 +192,7 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
         formData.append('project_id', root.project_id);
         formData.append('data_time', data_time);
         formData.append('sheet_num', sheet_num);
-        formData.append('sheet_name', sheet_name_str);
+        formData.append('sheet_name', JSON.stringify(sheet_name_list));
         formData.append('title_lines', sheet_title_num);
         formData.append('indicator_position', indicator_position);
 

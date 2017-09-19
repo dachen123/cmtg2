@@ -24,19 +24,30 @@ import UserItem from '../components/user_item.vue'
         data:{
             user_info_list:[] ,
             other_company_user:[],
-            classify:"my_company"
+            classify:"my_company",
+            current_user_info:null
         },
         http:{
             emulateJSON: true,
             emulateHTTP: true
         },
         created:function(){
-            this.get_my_company_user()
+            this.get_user_info(this.get_my_company_user)
         },
         components:{
             UserItem
         },
         methods:{
+            get_user_info:function(func){
+                this.$http.get('/get_user_info',{
+                })
+                    .then(function(res){
+                        this.current_user_info = res.body.result.user_info
+                        if(func){
+                            func()
+                        }
+                    }) 
+            },
             get_my_company_user:function(){
                 this.classify = "my_company";
                 this.$http.get('/get_user_info_list',{
