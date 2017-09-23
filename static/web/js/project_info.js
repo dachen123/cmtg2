@@ -48,6 +48,7 @@ import IndicatorItem from '../components/indicator_transplant_item.vue'
             this.fetch_indicator_list()
             this.fetch_project_all_board(this.project_id)
             this.action_by_transt_type()
+            this.get_financial_data_upload_history()
         },
         components:{
             ProjectChildItem,
@@ -71,6 +72,31 @@ import IndicatorItem from '../components/indicator_transplant_item.vue'
             } 
         },
         methods:{
+            get_financial_data_upload_history:function(){
+                this.$http.get('/get_financial_data_upload_history',{
+                    params:{
+                        project_id:this.project_id
+                    }
+                })
+                    .then(function(res){
+                        var r = config.parsebody(res.body,function(result){
+                            var body = $('#list-financial-history');
+                            for(var y in result){
+                                var m_str = '';
+                                for( var m in result[y]){
+                                    m_str += result[y][m] + '&nbsp;&nbsp;'; 
+                                }
+                                body.append('<div class="clear-float">'
+                                            +'<h5 style="display:inline-block;float:left;">'+y+'：</h5>'
+                                            +'<div style="margin-left:30px;float:left;padding:6px 0">'
+                                                +'<p>'+m_str+'</p>'
+                                            +'</div>'
+                                        +'</div>')
+                            }
+                        });
+                    }) 
+
+            },
             fetch_project_list:function(){
                 var data = {
                     company_id:this.company_id
@@ -651,6 +677,7 @@ import IndicatorItem from '../components/indicator_transplant_item.vue'
         window.downloadFile(download_url);
 
     });
+
     
 
 })(this);

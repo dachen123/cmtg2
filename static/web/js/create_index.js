@@ -624,13 +624,21 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             check_compute_indicator_expression:function(){
                 var expression = this.compute_indicator_expression.replace(/\s+/g,'');
                 console.log(expression);
-                var i_name_list = expression.match(/[^.,<>+\-*/()[\]{}^&|%0-9]+/g);
+                //var i_name_list = expression.match(/[^.,<>+\-*/()[\]{}^&|%0-9]+/g);
+                var i_name_list = expression.match(/[\u4e00-\u9fa5]+([\(\（][\u4e00-\u9fa5]+[\)\）])*/gm);
                 console.log(i_name_list);
                 for (var index in i_name_list){
                     var i_name = i_name_list[index]; 
                     var i_id = this.indicator_map[i_name];
                     if(i_id){
-                        expression = expression.replace(eval("/"+i_name+"/g"),'i'+i_id);
+                        var p_i_name = i_name.replace(/([\(\（\）\)])/g,"\\$1");
+                        expression = expression.replace(eval("/[\u4e00-\u9fa5]?"+p_i_name+"[\u4e00-\u9fa5]?/g"),function($1){
+                                if($1==i_name){
+                                    return 'i'+i_id;
+                                }else{
+                                    return $1; 
+                                }
+                        });
                     }else if( i_name.search('年初余额') > 0){
                         var sub_i_name = i_name.replace('年初余额','');
                         i_id = this.indicator_map[sub_i_name];
@@ -638,7 +646,15 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                             alert('找不到指标名'+i_name);
                             return false;
                         }
-                        expression = expression.replace(eval("/"+i_name+"/g"),'a'+i_id);
+                        var p_i_name = i_name.replace(/([\(\（\）\)])/g,"\\$1");
+                        expression = expression.replace(eval("/[\u4e00-\u9fa5]?"+p_i_name+"[\u4e00-\u9fa5]?/g"),function($1){
+                                if($1 == i_name){
+
+                                    return 'a'+i_id;
+                                }else{
+                                    return i_name; 
+                                }
+                            });
                         
                     }else{
                         alert('找不到指标名'+i_name);
