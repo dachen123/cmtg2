@@ -412,5 +412,265 @@ import HomeLpmItem from '../components/home_latest_pm.vue'
 
     });
 
+    var project_d = {};
+    function reset_fc_select_btn(callback){
+        var project_d_copy = $.extend(true,{},project_d);
+        var p_select = $('#unverified-fp-list');
+        var t_select = $('#unverified-fp-time-list');
+        p_select.empty();
+        t_select.empty();
+        for (var p in project_d_copy){
+            if( project_d_copy[p]['data_time'].length <= 0 ){
+                delete project_d[p]; 
+                continue;
+            } 
+            p_select.append('<li><a data-p_id="'
+                    +p+'" href="javascript:(0);">'
+                    +project_d[p]['p_name']+'</a></li>'); 
+        } 
+        $('#financial_verify_report').empty();
+        if( Object.keys(project_d).length > 0 ){
+            p_select.find('li:first').addClass('active');
+            var p_id = p_select.find('li.active').find('a').data('p_id');
+            for (var t in project_d[p_id]['data_time']){
+                t_select.append('<li><a href="javascript:(0);">'
+                        +project_d[p_id]['data_time'][t]+'</a></li>'); 
+            }
+            var t_node = t_select.find('li:first');
+            t_node.addClass('active');
+            var t = t_node.find('a').html();
+            callback(p_id,t);
+        }
+    }
+
+    function set_financial_verify_report(p_id,data_time,callback){
+        $.ajax({
+            cache:false,
+            type:'GET',
+            url:'/get_unverified_financial_data_by_fc',
+            dataType:"html",
+            data:{
+                project_id:p_id,
+                data_time:data_time
+            },
+            success:function(data){
+                $('#financial_verify_report').html(data);
+                init_financial_report_table();
+                callback && callback();
+            },
+            error:function(){
+                alert('网络错误，请重试!');
+            }
+        });
+    
+    }
+
+    var language = {
+                "decimal":        "",
+                "emptyTable":     "没有可用的数据",
+                "info":           "显示 _TOTAL_ 行中的 _START_ 到 _END_ 行",
+                "infoEmpty":      "共 0 行",
+                "infoFiltered":   "(filtered from _MAX_ total entries)",
+                "infoPostFix":    "",
+                "thousands":      ",",
+                "lengthMenu":     "显示 _MENU_ 行",
+                "loadingRecords": "加载中...",
+                "processing":     "正在处理中...",
+                "search":         "搜索:",
+                "zeroRecords":    "找不到匹配的记录",
+                "paginate": {
+                    "first":      "第一页",
+                    "last":       "最后一页",
+                    "next":       "下一页",
+                    "previous":   "上一页"
+                },
+                "aria": {
+                    "sortAscending":  ": 升序排序",
+                    "sortDescending": ": 降序排序"
+                }  
+            }; 
+
+    var report_table_1 = null;
+    var report_table_2 = null;
+    var report_table_3 = null;
+
+    function init_financial_report_table(){
+        var column_def_list = [];
+        // var column_length = $('#tab-1 table thead th').length;
+        for(var i=0;i< 4;i++){
+            var column_def = {
+                targets:[i],
+                orderData:[0,i],
+            };
+            if(i==0){
+                column_def['visible']=false;
+            }
+            else if(i==1){
+                column_def['orderable']=false;
+            }else{
+                column_def.className = 'text-right';
+            }
+            column_def_list.push(column_def);
+        }
+        report_table_1 = $('#tab_1 table').DataTable({
+            searching: false,
+            paging:false,
+            orderFixed: [ 0, 'asc' ],
+            columnDefs:column_def_list,
+            language:language
+
+        }); 
+        report_table_2 = $('#tab_2 table').DataTable({
+            searching: false,
+            paging:false,
+            orderFixed: [ 0, 'asc' ],
+            columnDefs:column_def_list,
+            language:language
+
+        }); 
+        report_table_3 = $('#tab_3 table').DataTable({
+            searching: false,
+            paging:false,
+            orderFixed: [ 0, 'asc' ],
+            columnDefs:column_def_list,
+            language:language
+
+        }); 
+        
+         
+    }
+
+    function get_unverified_financial_dt_list(){
+
+        $.ajax({
+            cache:false,
+            type:'GET',
+            url:'/get_unverified_data_time_list',
+            dataType:"json",
+            data:{},
+            success:function(json){
+                config.parsebody(json,function(result){
+                    $.extend(true,project_d,result);
+                    reset_fc_select_btn(set_financial_verify_report);
+
+                });
+            },
+            error:function(){
+                alert('网络错误，请重试!');
+            }
+        });
+    }
+
+    get_unverified_financial_dt_list();
+
+    $('#unverified-fp-list').on('click','a',function(){
+        $('#unverified-fp-list').find('.active').removeClass('active');
+        $(this).parents('li').addClass('active');
+        var p_elem = $(this);
+        var p_id = p_elem.data('p_id');
+        var t_select = $('#unverified-fp-time-list');
+        t_select.empty();
+        for (var t in project_d[p_id]['data_time']){
+            t_select.append('<li><a href="javascript:(0);">'
+                    +project_d[p_id]['data_time'][t]+'</a></li>'); 
+        }
+        var t_node = t_select.find('li:first');
+        t_node.addClass('active');
+        var t = t_node.find('a').html();
+        $('#financial_verify_report').empty();
+        set_financial_verify_report(p_id,t);
+    });
+
+    $('#unverified-fp-time-list').on('click','a',function(){
+        $('#unverified-fp-time-list').find('.active').removeClass('active');
+        $(this).parents('li').addClass('active');
+        var t_elem = $(this);
+        var p_elem = $('#unverified-fp-list').find('.active a');
+
+        $('#financial_verify_report').empty();
+        set_financial_verify_report(p_elem.data('p_id'),t_elem.html());
+    });
+
+    function get_new_month(li){
+        var new_li = null
+        if (li.prev().length > 0){
+            new_li = li.prev();
+            new_li.addClass('active');
+            return new_li;
+        }else if(li.next().length > 0){
+            new_li = li.next();
+            new_li.addClass('active');
+            return new_li;
+        }else{
+            return null
+        }
+    }
+
+    $('#financial-data-pass').on('click',function(){
+         var p_elem = $('#unverified-fp-list').find('.active');
+         var t_elem = $('#unverified-fp-time-list').find('.active');
+
+        if(confirm('确认通过？')){
+             $('#verify-financial-data-box .overlay').show();
+             verify_financial_data('true',p_elem,t_elem,verify_callback);
+        }
+
+
+    });
+    $('#financial-data-reject').on('click',function(){
+         var p_elem = $('#unverified-fp-list').find('.active');
+         var t_elem = $('#unverified-fp-time-list').find('.active');
+        if(confirm('确认驳回？')){
+             $('#verify-financial-data-box .overlay').show();
+             verify_financial_data('false',p_elem,t_elem,verify_callback);
+        }
+
+
+    });
+
+    function verify_callback(p_elem,t_elem){
+        var old_t_li = t_elem;
+        var new_li = get_new_month(old_t_li);
+        old_t_li.remove();
+        var p_id = p_elem.find('a').data('p_id');
+        var old_data_time = t_elem.html();
+        var index = project_d[p_id]['data_time'].indexOf(old_data_time);
+        project_d[p_id]['data_time'].splice(index,1);
+        if(new_li){
+            var new_time = new_li.find('a').html();
+            set_financial_verify_report(p_id,new_time)
+
+        }else{
+            reset_fc_select_btn(set_financial_verify_report);
+        }
+        $('#verify-financial-data-box .overlay').hide();
+    }
+
+    
+    function verify_financial_data(flag,p_elem,t_elem,callback){
+        
+	    $.ajax({
+	    	cache:false,
+	    	type:'POST',
+	    	url:'/verify_indicator_data',
+	    	dataType:"json",
+            data:{
+                'data_list':$('#report-data-id-input').val(),
+                'isok'     :flag
+            },
+	    	success:function(json){
+                config.parsebody(json,function(){
+                    callback(p_elem,t_elem);
+                });
+                $('#verify-financial-data-box .overlay').hide();
+	    	},
+	    	error:function(){
+                alert('网络错误，请重试!');
+                $('#verify-financial-data-box .overlay').hide();
+	    	}
+	    });
+    
+    }
+
 })(this);
 
