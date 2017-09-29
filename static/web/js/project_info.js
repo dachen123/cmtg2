@@ -619,58 +619,102 @@ import IndicatorItem from '../components/indicator_transplant_item.vue'
     });
 
     //date-ranger
-    var startDate = moment().local().format('MM/DD/YYYY');
-    var endDate = moment().local().add( moment.duration(1,'months'));
-    var endDate = endDate.format('MM/DD/YYYY');
-     
-    $('#daterange-input').daterangepicker({
-        "showDropdowns": true,
-        "autoApply": true,
-        "locale": {
-            "format": "MM/DD/YYYY",
-            "separator": " - ",
-            "applyLabel": "确定",
-            "cancelLabel": "取消",
-            "fromLabel": "从",
-            "toLabel": "到",
-            "customRangeLabel": "Custom",
-            "weekLabel": "W",
-            "daysOfWeek": [
-                "日",
-                "一",
-                "二",
-                "三",
-                "四",
-                "五",
-                "六"
-            ],
-            "monthNames": [
-                "一月",
-                "二月",
-                "三月",
-                "四月",
-                "五月",
-                "六月",
-                "七月",
-                "八月",
-                "九月",
-                "十月",
-                "十一月",
-                "十二月"
-            ],
-            "firstDay": 1
+    // var startDate = moment().local().format('MM/DD/YYYY');
+    // var endDate = moment().local().add( moment.duration(1,'months'));
+    // var endDate = endDate.format('MM/DD/YYYY');
+    //  
+    // $('#daterange-input').daterangepicker({
+    //     "showDropdowns": true,
+    //     "autoApply": true,
+    //     "locale": {
+    //         "format": "MM/DD/YYYY",
+    //         "separator": " - ",
+    //         "applyLabel": "确定",
+    //         "cancelLabel": "取消",
+    //         "fromLabel": "从",
+    //         "toLabel": "到",
+    //         "customRangeLabel": "Custom",
+    //         "weekLabel": "W",
+    //         "daysOfWeek": [
+    //             "日",
+    //             "一",
+    //             "二",
+    //             "三",
+    //             "四",
+    //             "五",
+    //             "六"
+    //         ],
+    //         "monthNames": [
+    //             "一月",
+    //             "二月",
+    //             "三月",
+    //             "四月",
+    //             "五月",
+    //             "六月",
+    //             "七月",
+    //             "八月",
+    //             "九月",
+    //             "十月",
+    //             "十一月",
+    //             "十二月"
+    //         ],
+    //         "firstDay": 1
+    //     },
+    //     "startDate": startDate,
+    //     "endDate": endDate
+    // }, function(start, end, label) {
+    //     startDate = start.format('MM/DD/YYYY');
+    //     endDate = end.format('MM/DD/YYYY');
+    // });
+    // datetimepicker
+    
+    var default_time = moment().local().hours(0).minutes(0).seconds(0);
+    var end_time = moment().local().hours(0).minutes(0).seconds(0).add( moment.duration(1,'months'));
+
+    $('#start-time-picker').datetimepicker({
+        locale: 'zh-cn',
+        format: 'MM/DD/YYYY',
+        allowInputToggle:true,
+        widgetPositioning:{
+            horizontal: 'left',
+            vertical: 'bottom'
         },
-        "startDate": startDate,
-        "endDate": endDate
-    }, function(start, end, label) {
-        startDate = start.format('MM/DD/YYYY');
-        endDate = end.format('MM/DD/YYYY');
+        defaultDate:default_time
     });
+
+    $('#end-time-picker').datetimepicker({
+        locale: 'zh-cn',
+        format: 'MM/DD/YYYY',
+        minDate:default_time,
+        allowInputToggle:true,
+        widgetPositioning:{
+            horizontal: 'left',
+            vertical: 'bottom'
+        },
+        defaultDate:end_time
+    });
+
+    $('#start-time-picker').on('dp.change',function(e){
+        var minDate = $('#start-time-picker').data('DateTimePicker').date();
+        $('#end-time-picker').data('DateTimePicker').minDate(minDate);
+
+    });
+
+
+    function startDate(){
+        return $('#start-time-picker').data('DateTimePicker').date().format('MM/DD/YYYY');
+    
+    }
+
+    function endDate(){
+        return $('#end-time-picker').data('DateTimePicker').date().format('MM/DD/YYYY');
+    
+    }
 
 
     $('#export-template-btn').on('click',function(){
         event.preventDefault();
-        var download_url = '/export_data_template_xls?project_id='+root.project_id+'&start_time='+startDate+'&end_time='+endDate;
+        var download_url = '/export_data_template_xls?project_id='+root.project_id+'&start_time='+startDate()+'&end_time='+endDate();
         if( root.board_id > 0){
             download_url += '&board_id=' + root.board_id; 
         }

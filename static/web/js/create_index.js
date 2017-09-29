@@ -210,6 +210,20 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                 if(this.is_compute_indicator == 'true'){
                     data['compute_expression'] = this.compute_i_expression;
                 }
+                var illegal_c = this.indicator_name.search(/[^\u4e00-\u9fa5（），。\w]/gm);
+                if (illegal_c >= 0){
+                    var c =  this.indicator_name[illegal_c];
+                    var msg = '指标名中存在非法字符"'+c+'"';
+                    if ( c == ' ' || c == '　'){
+                        msg += '，请检查输入是否有空白字符';
+                    }
+                    alert(msg);
+                    return;
+                }
+                if(!/[\u4e00-\u9fa5a-zA-Z_]+[\u4e00-\u9fa5\w（），。]*/.test(this.indicator_name)){
+                    alert("指标名的第一个字符不能为数字和括号等字符");
+                    return;
+                }
                 this.$http.post('/create_indicator',data
                 ).then(function(r){
                     console.log(r.body);
@@ -259,6 +273,20 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                 }
                 if(this.is_compute_indicator == 'true'){
                     data['compute_expression'] = this.compute_i_expression;
+                }
+                var illegal_c = this.indicator_name.search(/[^\u4e00-\u9fa5（），。\w]/gm);
+                if (illegal_c >= 0){
+                    var c =  this.indicator_name[illegal_c];
+                    var msg = '指标名中存在非法字符"'+c+'"';
+                    if ( c == ' ' || c == '　'){
+                        msg += '，请检查输入是否有空白字符';
+                    }
+                    alert(msg);
+                    return;
+                }
+                if(!/[\u4e00-\u9fa5a-zA-Z_]+[\u4e00-\u9fa5\w，。（）]*/.test(this.indicator_name)){
+                    alert("指标名的第一个字符不能为数字和括号等字符");
+                    return;
                 }
                 this.$http.post('/update_indicator',data
                 ).then(function(r){
@@ -606,8 +634,8 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                 }
                 var data={
                     project_id:this.project_id,
-                    begin_time:startDate,
-                    end_time:endDate
+                    begin_time:startDate(),
+                    end_time:endDate()
                 }
                 this.$http.post('/del_rule_in_date_range',data
                 )
@@ -625,14 +653,14 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                 var expression = this.compute_indicator_expression.replace(/\s+/g,'');
                 console.log(expression);
                 //var i_name_list = expression.match(/[^.,<>+\-*/()[\]{}^&|%0-9]+/g);
-                var i_name_list = expression.match(/[\u4e00-\u9fa5]+([\(\（][\u4e00-\u9fa5]+[\)\）])*/gm);
+                var i_name_list = expression.match(/[\u4e00-\u9fa5a-zA-Z]+[\u4e00-\u9fa5\w]*([\(\（][\u4e00-\u9fa5\w，。]+[\)\）])*[\u4e00-\u9fa5\w]*/gm);
                 console.log(i_name_list);
                 for (var index in i_name_list){
                     var i_name = i_name_list[index]; 
                     var i_id = this.indicator_map[i_name];
                     if(i_id){
                         var p_i_name = i_name.replace(/([\(\（\）\)])/g,"\\$1");
-                        expression = expression.replace(eval("/[\u4e00-\u9fa5]?"+p_i_name+"[\u4e00-\u9fa5]?/g"),function($1){
+                        expression = expression.replace(eval("/[\u4e00-\u9fa5a-zA-Z_]?"+p_i_name+"[\u4e00-\u9fa5，。\w]?/g"),function($1){
                                 if($1==i_name){
                                     return 'i'+i_id;
                                 }else{
@@ -647,7 +675,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                             return false;
                         }
                         var p_i_name = i_name.replace(/([\(\（\）\)])/g,"\\$1");
-                        expression = expression.replace(eval("/[\u4e00-\u9fa5]?"+p_i_name+"[\u4e00-\u9fa5]?/g"),function($1){
+                        expression = expression.replace(eval("/[\u4e00-\u9fa5a-zA-Z_]?"+p_i_name+"[\u4e00-\u9fa5，。\w]?/g"),function($1){
                                 if($1 == i_name){
 
                                     return 'a'+i_id;
@@ -902,54 +930,97 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
     
     }
 
-    var startDate = moment().local().format('MM/DD/YYYY');
-    var endDate = moment().local().add( moment.duration(1,'months'));
-    var endDate = endDate.format('MM/DD/YYYY');
-     
-    $('#inputDateRange').daterangepicker({
-        "showDropdowns": true,
-        "autoApply": true,
-        "locale": {
-            "format": "MM/DD/YYYY",
-            "separator": " - ",
-            "applyLabel": "确定",
-            "cancelLabel": "取消",
-            "fromLabel": "从",
-            "toLabel": "到",
-            "customRangeLabel": "Custom",
-            "weekLabel": "W",
-            "daysOfWeek": [
-                "日",
-                "一",
-                "二",
-                "三",
-                "四",
-                "五",
-                "六"
-            ],
-            "monthNames": [
-                "一月",
-                "二月",
-                "三月",
-                "四月",
-                "五月",
-                "六月",
-                "七月",
-                "八月",
-                "九月",
-                "十月",
-                "十一月",
-                "十二月"
-            ],
-            "firstDay": 1
+    // var startDate = moment().local().format('MM/DD/YYYY');
+    // var endDate = moment().local().add( moment.duration(1,'months'));
+    // var endDate = endDate.format('MM/DD/YYYY');
+    //  
+    // $('#inputDateRange').daterangepicker({
+    //     "showDropdowns": true,
+    //     "autoApply": true,
+    //     "locale": {
+    //         "format": "MM/DD/YYYY",
+    //         "separator": " - ",
+    //         "applyLabel": "确定",
+    //         "cancelLabel": "取消",
+    //         "fromLabel": "从",
+    //         "toLabel": "到",
+    //         "customRangeLabel": "Custom",
+    //         "weekLabel": "W",
+    //         "daysOfWeek": [
+    //             "日",
+    //             "一",
+    //             "二",
+    //             "三",
+    //             "四",
+    //             "五",
+    //             "六"
+    //         ],
+    //         "monthNames": [
+    //             "一月",
+    //             "二月",
+    //             "三月",
+    //             "四月",
+    //             "五月",
+    //             "六月",
+    //             "七月",
+    //             "八月",
+    //             "九月",
+    //             "十月",
+    //             "十一月",
+    //             "十二月"
+    //         ],
+    //         "firstDay": 1
+    //     },
+    //     "startDate": startDate,
+    //     "endDate": endDate
+    // }, function(start, end, label) {
+    //     // console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+    //     startDate = start.format('MM/DD/YYYY');
+    //     endDate = end.format('MM/DD/YYYY');
+    // });
+
+    var default_time = moment().local().hours(0).minutes(0).seconds(0);
+    var end_time = moment().local().hours(0).minutes(0).seconds(0).add( moment.duration(1,'months'));
+
+    $('#start-time-picker').datetimepicker({
+        locale: 'zh-cn',
+        format: 'MM/DD/YYYY',
+        allowInputToggle:true,
+        widgetPositioning:{
+            horizontal: 'left',
+            vertical: 'bottom'
         },
-        "startDate": startDate,
-        "endDate": endDate
-    }, function(start, end, label) {
-        // console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
-        startDate = start.format('MM/DD/YYYY');
-        endDate = end.format('MM/DD/YYYY');
+        defaultDate:default_time
     });
+
+    $('#end-time-picker').datetimepicker({
+        locale: 'zh-cn',
+        format: 'MM/DD/YYYY',
+        minDate:default_time,
+        allowInputToggle:true,
+        widgetPositioning:{
+            horizontal: 'left',
+            vertical: 'bottom'
+        },
+        defaultDate:end_time
+    });
+
+    $('#start-time-picker').on('dp.change',function(e){
+        var minDate = $('#start-time-picker').data('DateTimePicker').date();
+        $('#end-time-picker').data('DateTimePicker').minDate(minDate);
+
+    });
+
+
+    function startDate(){
+        return $('#start-time-picker').data('DateTimePicker').date().format('MM/DD/YYYY');
+    
+    }
+
+    function endDate(){
+        return $('#end-time-picker').data('DateTimePicker').date().format('MM/DD/YYYY');
+    
+    }
 
 
 
