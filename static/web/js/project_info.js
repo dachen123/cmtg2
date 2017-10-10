@@ -333,6 +333,8 @@ import IndicatorItem from '../components/indicator_transplant_item.vue'
                         config.parsebody(res.body,function(){
                             comp.fetch_indicator_list();
                             $('#project-indicator-box .overlay').hide();
+                        },function(){
+                            $('#project-indicator-box .overlay').hide();
                         })
                     }) 
             },

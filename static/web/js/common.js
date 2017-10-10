@@ -25,7 +25,7 @@ config.GetURLParameter = function(sParam){
     }
 }
 
-config.parsebody = function(body,callback){
+config.parsebody = function(body,callback,err_handle){
     if(body.error_code != 'OK'){
         if (typeof body.message == 'string'){
             alert(body.message); 
@@ -33,6 +33,7 @@ config.parsebody = function(body,callback){
         else{
             alert(JSON.stringify(body.message)); 
         }
+        err_handle&&err_handle();
         return null
     }
     else{
