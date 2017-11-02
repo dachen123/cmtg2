@@ -547,6 +547,10 @@ import IndicatorItem from '../components/indicator_transplant_item.vue'
                 board_name:$(this).find('input').val()
             });
         });
+        if( board_list.length <= 0){
+            alert("没有可以保存的版块");
+            return;
+        }
         $.ajax({
             type: "POST",
             url:'/save_project_board',

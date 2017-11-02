@@ -157,7 +157,7 @@ import CompanyProjectItem from '../components/company_project_item.vue'
                 + attr_id +'" class="form-control company-attr-input" >'
                 + option_str
                 +'</select>'
-                +'<p class="form-control attr-text-p" style="background-color:#EEEEEE;border:0px;height:auto;min-height:32px;">'+data+'</p> '
+                +'<p class="form-control attr-text-p" style="background-color:#EEEEEE;border:0px;height:auto;min-height:32px;word-wrap:break-word;">'+data+'</p> '
                 +'</div>'
                 +'</div>'
         }else if( input_type == 'string'){
