@@ -157,18 +157,42 @@
                     }
                 }).then(function(res){
                     if(res.body.error_code == 'OK'){
-                        var proof_list = res.body.result.proof;
-                        if(!proof_list){
-                            proof_list=[]; 
-                        }
+                        var proof = res.body.result.proof;
+                        //if(!proof_list){
+                        //    proof_list=[]; 
+                        //}
                         var modal = $('#data-proof-modal');
-                        modal.find('#data-proof-list-ul').empty();
-                        for(var index in proof_list){
-                            var p = proof_list[index]; 
-                            $('#data-proof-list-ul').append('<li><a href="'+p
-                            +'">'+p.split('/').pop()
-                            +'</a></li>'); 
+                        //modal.find('#data-proof-list-ul').empty();
+                        //for(var index in proof_list){
+                        //    var p = proof_list[index]; 
+                        //    $('#data-proof-list-ul').append('<li><a href="'+p
+                        //    +'">'+p.split('/').pop()
+                        //    +'</a></li>'); 
+                        //}
+
+                        var temp = '';
+
+                        temp += '<div style="border-bottom:1px solid #E0E5EF;margin-botton:15px;padding-left:20px;">';
+                        if(proof.text){
+
+                            temp +='<h5 style="background-color:#06ad3d;padding:5px;">文本：</h5>'
+                            +'<div id="report-content">' + proof.text
+                            +'</div>'
                         }
+                        var attachment = proof.attachment;
+                        if(attachment && attachment.length > 0){
+                            temp += '<h5 style="background-color:#06ad3d;padding:5px;"><i class="fa fa-fw fa-external-link"></i>文件：</h5>'
+                            temp += '<ul>';
+                            for (var i in attachment){
+                                var a = attachment[i];
+                                temp += '<li><a target="_blank" href="'+a['link']+'">'+a['filename']+'</a></li>'
+                            }
+                            temp += '</ul>';
+                        }
+
+                        temp += '</div>';
+
+                        modal.find('.modal-body').html(temp);
                         modal.modal('show');
                     }else{
                         alert('网络繁忙，稍后重试'); 

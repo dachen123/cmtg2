@@ -306,6 +306,7 @@ import HomeLpmItem from '../components/home_latest_pm.vue'
     var append_unverified_data = function(ret){
         var data_list = ret.data_list;
         var tr_str = '';
+        window.data_proof = {};
         for(var index in data_list){
             var e = data_list[index];
             tr_str += '<tr data-id="'+e.id+'">'
@@ -315,8 +316,9 @@ import HomeLpmItem from '../components/home_latest_pm.vue'
                   +'<td>'+e.data+'</td>'
                   +'<td>'+moment.unix(e.timestamp).format("YYYY-MM-DD")+'</td>'
                   +'<td>'+e.operator+'</td>'
-             if(e.proof.length > 0){
-                  tr_str += '<td data-proof='+ JSON.stringify(e.proof)
+             if(e.proof.text || e.proof.attachment){
+                 window.data_proof[e.id] = e.proof;
+                  tr_str += '<td data-proof='
                       +'><button class="btn btn-danger btn-xs show-data-proof">查看证据</button></td></tr>'
              }else{
                   tr_str += '<td><label class="label label-success label-xs">无证据</label></td></tr>'
@@ -328,15 +330,39 @@ import HomeLpmItem from '../components/home_latest_pm.vue'
     }
 
     $('#data-verify-table').on('click','.show-data-proof',function(){
-        var proof_str = $(this).parents('td').attr('data-proof');
-        var proof_list = JSON.parse(proof_str);
-        $('#data-proof-list-ul').empty();
-        for(var index in proof_list){
-            var p = proof_list[index];
-            $('#data-proof-list-ul').append('<li><a href="'+p
-                    +'">'+p.split('/').pop()
-                    +'</a></li>'); 
+        var data_id = $(this).parents('tr').data('id');
+        var proof = window.data_proof[data_id];
+        // var proof_list = JSON.parse(proof_str);
+        // $('#data-proof-list-ul').empty();
+        // for(var index in proof_list){
+        //     var p = proof_list[index];
+        //     $('#data-proof-list-ul').append('<li><a href="'+p
+        //             +'">'+p.split('/').pop()
+        //             +'</a></li>'); 
+        // }
+        var temp = '';
+        
+        temp += '<div style="border-bottom:1px solid #E0E5EF;margin-botton:15px;padding-left:20px;">';
+        if(proof.text){
+
+            temp +='<h5 style="background-color:#06ad3d;padding:5px;">文本：</h5>'
+                +'<div id="report-content">' + proof.text
+                +'</div>'
         }
+            var attachment = proof.attachment;
+        if(attachment.length > 0){
+            temp += '<h5 style="background-color:#06ad3d;padding:5px;"><i class="fa fa-fw fa-external-link"></i>文件：</h5>'
+                temp += '<ul>';
+            for (var i in attachment){
+                var a = attachment[i];
+                temp += '<li><a target="_blank" href="'+a['link']+'">'+a['filename']+'</a></li>'
+            }
+            temp += '</ul>';
+        }
+
+        temp += '</div>';
+
+        $('#data-proof-modal').find('.modal-body').html(temp);
         $('#data-proof-modal').modal('show');
     });
 

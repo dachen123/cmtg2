@@ -727,6 +727,29 @@ import IndicatorItem from '../components/indicator_transplant_item.vue'
         window.downloadFile(download_url);
 
     });
+    
+    $("#data-verify-switch").bootstrapSwitch({
+        'offText':'关',
+        'onText':'开',
+        'onSwitchChange':function(event,state){
+            $.ajax({
+                type: "POST",
+                url:'/set_project_data_verify',
+                data: {
+                    project_id:root.project_id,
+                    state:state
+                },
+                success: function (json) {
+                    config.parsebody(json,function(ret){
+                    });
+
+                },
+                error: function () {
+                    console.log('net error');
+                }
+            }); 
+        }
+    });
 
     
 

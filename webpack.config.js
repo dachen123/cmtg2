@@ -63,33 +63,32 @@ module.exports = {
         //     compress: {
         //         warnings: false
         //     }
-        // })
+        // }),
     // new webpack.DefinePlugin({
     //   'process.env': {
     //     NODE_ENV: '"production"'
     //   }
     // }),
-    // new webpack.optimize.UglifyJsPlugin({
-    //   sourceMap: true,
-    //   comments: false,
-    //   compress: {
-    //     warnings: false
-    //   }
-    // }),
-    // new webpack.LoaderOptionsPlugin({
-    //   minimize: true
-    // }),
+    new webpack.optimize.UglifyJsPlugin({
+      sourceMap: true,
+      comments: false,
+      compress: {
+        warnings: false
+      }
+    }),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true
+    }),
      // new webpack.optimize.CommonsChunkPlugin({name:'vendor',  filename:'vendor.bundle.js'}),
-    // new CompressionWebpackPlugin({ 
-    //     asset: '[path].gz[query]',
-    //     algorithm: 'gzip',
-    //     test: new RegExp(
-    //         '\\.(js|css)$'   
-    //     ),
-    //     threshold: 10240,
-    //     minRatio: 0.8
-    // })
-        
+    new CompressionWebpackPlugin({ 
+        asset: '[path].gz[query]',
+        algorithm: 'gzip',
+        test: new RegExp(
+            '\\.(js|css)$'   
+        ),
+        threshold: 10240,
+        minRatio: 0.8
+    })
     
     ]
 }

@@ -47,7 +47,7 @@ import EventItem from '../components/event_item.vue'
             EventItem
         },
         methods:{
-            fetch_event_list:function(event,e_type=null,page=null){
+            fetch_event_list:function(event,e_type,page){
                 var aevent_type='all';
                 if(e_type){
                     aevent_type = e_type;

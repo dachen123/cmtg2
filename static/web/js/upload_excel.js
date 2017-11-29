@@ -196,6 +196,14 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
         formData.append('title_lines', sheet_title_num);
         formData.append('indicator_position', indicator_position);
 
+        var files = $('#idata-attachment-file-input').get(0).files;
+        for (var i=0 ;i < files.length;i++){
+            var file = files[i]; 
+            formData.append('file[]',file,file.name);
+        }
+        formData.append('remark',$('#idata-remark').val());
+
+
         $.ajax('/parse_excel_indicator_data', {
             method: "POST",
             data: formData,
@@ -392,6 +400,13 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
         formData.append('data_time', data_time);
         formData.append('indicator_id', indicator_id);
 
+        var files = $('#statement-attachment-file-input').get(0).files;
+        for (var i=0 ;i < files.length;i++){
+            var file = files[i]; 
+            formData.append('file[]',file,file.name);
+        }
+        formData.append('remark',$('#statement-remark').val());
+
         $.ajax('/import_bank_statement', {
             method: "POST",
             data: formData,
@@ -411,6 +426,43 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
             }
         }); 
     });
+
+    $('.textarea').wysihtml5({
+        locale:'zh-CN'
+    });
+
+    $(document).on('change', '#idata-attachment-file-input', function() {
+        var input = $(this);
+
+        var files = input.get(0).files;
+        // 对每个文件进行循环处理
+        $('#idata_attachment_list').empty();
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+
+            $('#idata_attachment_list').append('<li>'+file.name+'</li>');
+            // // 添加文件到formData
+            // formData.append('photos[]', file, file.name);
+        }
+    });
+
+
+    $(document).on('change', '#statement-attachment-file-input', function() {
+        var input = $(this);
+
+        var files = input.get(0).files;
+        // 对每个文件进行循环处理
+        $('#statement_data_attachment_list').empty();
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+
+            $('#statement_data_attachment_list').append('<li>'+file.name+'</li>');
+            // // 添加文件到formData
+            // formData.append('photos[]', file, file.name);
+        }
+    });
+
+
 
 })(this);
 

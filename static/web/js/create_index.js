@@ -379,6 +379,12 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                 var project_select = $('#project-select-2');
                 var board_select = $('#board-select-2');
 
+                company_select.empty();
+                var c_list = data.company_list;
+                for (var index in c_list){
+                    var c = c_list[index];
+                    company_select.append("<option value='"+c.company_id+"'>"+c.company_name+"</option>");  //添加一项option
+                }
                 company_select.val(data.company.company_id);
                 company_select.multiselect('refresh');
 
@@ -428,11 +434,15 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                     this.is_refer_indicator = indicator_info.is_refer_indicator;
                     if(indicator_info.is_refer_indicator == 'true'){
                         $('#create_index_box').hide();
+                        $('#create_index_box_li').hide();
                         $('#create_refer_indicator_box').show();
+                        $('#create_refer_indicator_box_li').show();
                         _m.get_refer_indicator_cascader_select_val(this.indicator_id);
                     }else{
                         $('#create_index_box').show();
+                        $('#create_index_box_li').show();
                         $('#create_refer_indicator_box').hide();
+                        $('#create_refer_indicator_box_li').hide();
                     }
                 });
             
@@ -899,9 +909,9 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
     
         });
 
-        if(root.indicator_id && root.is_refer_indicator=='true'){
-            root.get_refer_indicator_cascader_select_val(root.indicator_id);
-        }
+        // if(root.indicator_id && root.is_refer_indicator=='true'){
+        //     root.get_refer_indicator_cascader_select_val(root.indicator_id);
+        // }
     });
     //project select rebulid
     function rebuild_project_select(company_id){
@@ -1106,16 +1116,27 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                     for (var index in c_list){
                         var c = c_list[index];
                         elem.append("<option value='"+c.company_id+"'>"+c.company_name+"</option>");  //添加一项option
-                        elem_2.append("<option value='"+c.company_id+"'>"+c.company_name+"</option>");  //添加一项option
+                        // elem_2.append("<option value='"+c.company_id+"'>"+c.company_name+"</option>");  //添加一项option
                     }
                     elem.get(0).selectedIndex=0;  //设置Select索引值为1的项选中 
                     $('#company-select').multiselect('rebuild');
                     rebuild_project_select(elem.val());
 
+                    // elem_2.get(0).selectedIndex=0;  //设置Select索引值为1的项选中 
+                    // $('#company-select-2').multiselect('rebuild');
+                    // rebuild_project_select_2(elem_2.val());
+                }
+                if(elem_2.find('option').length <= 0 ){
+                    elem_2.empty();
+                    var c_list = json.result.company_info_list;
+                    for (var index in c_list){
+                        var c = c_list[index];
+                        elem_2.append("<option value='"+c.company_id+"'>"+c.company_name+"</option>");  //添加一项option
+                    }
+                    elem_2.get(0).selectedIndex=0;  //设置Select索引值为1的项选中 
                     $('#company-select-2').multiselect('rebuild');
                     rebuild_project_select_2(elem_2.val());
                 }
-    
             },
             error: function () {
                 console.log('net error');

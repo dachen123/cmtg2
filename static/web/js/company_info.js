@@ -43,7 +43,6 @@ import CompanyProjectItem from '../components/company_project_item.vue'
         methods:{
             fetch_project_list:function(){
                 var project_id = config.GetURLParameter('project_id');
-                // var company_id = config.GetURLParameter('company_id');
                 var data = {
                     company_id:this.company_id
                 }
@@ -59,7 +58,6 @@ import CompanyProjectItem from '../components/company_project_item.vue'
             },
             redirect_to_create:function(){
                 var parent_id = config.GetURLParameter('parent_id');
-                // var company_id = config.GetURLParameter('company_id');
                 if (parent_id){
                     window.location.href="/create_project?company_id="+this.company_id+"&parent_id="+parent_id;
                 }else{
@@ -184,28 +182,28 @@ import CompanyProjectItem from '../components/company_project_item.vue'
     }
 
     function get_company_attr_info(company_id){
-        $.ajax({
-            type: "GET",
-            url:'/get_company_attr_info',
-            data:{
-                company_id:company_id
-            }, 
-            success: function (json) {
-                config.parsebody(json,function(ret){
-                    var all_input_html = '';
-                    for( var index in ret.company_attr_list){
-                        var attr = ret.company_attr_list[index]; 
-                        all_input_html += input_html(attr.attr_id,attr.input_type,attr.attr_name,attr.attach_value,attr.data);
-                    }
-                    $('#company-attr-list').empty();
-                    $('#company-attr-list').append(all_input_html);
-                });
-    
-            },
-            error: function () {
-                console.log('网络繁忙，稍后重试');
-            }
-        }); 
+        // $.ajax({
+        //     type: "GET",
+        //     url:'/get_company_attr_info',
+        //     data:{
+        //         company_id:company_id
+        //     }, 
+        //     success: function (json) {
+        //         config.parsebody(json,function(ret){
+        //             var all_input_html = '';
+        //             for( var index in ret.company_attr_list){
+        //                 var attr = ret.company_attr_list[index]; 
+        //                 all_input_html += input_html(attr.attr_id,attr.input_type,attr.attr_name,attr.attach_value,attr.data);
+        //             }
+        //             $('#company-attr-list').empty();
+        //             $('#company-attr-list').append(all_input_html);
+        //         });
+        //
+        //     },
+        //     error: function () {
+        //         console.log('网络繁忙，稍后重试');
+        //     }
+        // }); 
     }
 
     $('#save-company-attr').on('click',function(){
