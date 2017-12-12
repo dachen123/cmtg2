@@ -201,7 +201,8 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
             var file = files[i]; 
             formData.append('file[]',file,file.name);
         }
-        formData.append('remark',$('#idata-remark').val());
+        //formData.append('remark',$('#idata-remark').val());
+        formData.append('remark',CKEDITOR.instances['idata-remark'].getData());
 
 
         $.ajax('/parse_excel_indicator_data', {
@@ -405,7 +406,8 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
             var file = files[i]; 
             formData.append('file[]',file,file.name);
         }
-        formData.append('remark',$('#statement-remark').val());
+        //formData.append('remark',$('#statement-remark').val());
+        formData.append('remark',CKEDITOR.instances['statement-remark'].getData());
 
         $.ajax('/import_bank_statement', {
             method: "POST",
@@ -427,8 +429,16 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
         }); 
     });
 
-    $('.textarea').wysihtml5({
-        locale:'zh-CN'
+    // $('.textarea').wysihtml5({
+    //     locale:'zh-CN'
+    // });
+    CKEDITOR.replace('idata-remark',{
+        height:150,
+        width:'auto'
+    });
+    CKEDITOR.replace('statement-remark',{
+        height:150,
+        width:'auto'
     });
 
     $(document).on('change', '#idata-attachment-file-input', function() {

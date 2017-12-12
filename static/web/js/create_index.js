@@ -52,6 +52,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             is_compute_indicator:"false",
             is_durative:"false",
             is_refer_indicator:'false',
+            refer_to_id: '',
             indicator_map:{},
             indicator_map_reverse:{},
             alert_message:""
@@ -335,9 +336,18 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             update_refer_indicator:function(){
                 var data = {
                     indicator_id:this.indicator_id,
-                    project_id:this.project_id,
-                    forum:this.forum_2,
+                    refer_to_id:$('#indicator-select-2').val(),
+                    board_id:this.forum_2,
                 }
+                this.$http.post('/update_refer_indicator',data
+                ).then(function(r){
+                    console.log(r.body);
+                    var _m = this;
+                    var r = config.parsebody(r.body,function(result){
+                        _m.indicator_id=result.indicator_info.indicator_id;
+                        window.location.href='/edit_indicator?project_id='+_m.project_id+'&indicator_id='+_m.indicator_id;
+                    });
+                }) 
             },
             set_rule_cascader_select_val:function(data){
                 var indicator_select = $('#indicator-select');
@@ -354,7 +364,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                     indicator_select.append("<option value='"+i_list[index].indicator_id+"'>"+i_list[index].indicator_name+"</option>");  //添加一项option
                 }
                 indicator_select.val(data.indicator.indicator_id);
-                indicator_select.multiselect('rebuild');
+                indicator_select.multiselect('refresh');
 
                 project_select.empty(); //清空原有的
                 var p_list = data.project_list;
@@ -362,7 +372,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                     project_select.append("<option value='"+p_list[index].project_id+"'>"+p_list[index].project_name+"</option>");  //添加一项option
                 }
                 project_select.val(data.project.project_id);
-                project_select.multiselect('rebuild');
+                project_select.multiselect('refresh');
 
                 board_select.empty();//清空原有的
                 var b_list = data.board_list;
@@ -432,12 +442,13 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                     this.set_expression_to_unicode(indicator_info.compute_expression);
                     this.is_durative=indicator_info.is_durative;
                     this.is_refer_indicator = indicator_info.is_refer_indicator;
+                    this.refer_to_id = indicator_info.refer_to_id;
                     if(indicator_info.is_refer_indicator == 'true'){
                         $('#create_index_box').hide();
                         $('#create_index_box_li').hide();
                         $('#create_refer_indicator_box').show();
                         $('#create_refer_indicator_box_li').show();
-                        _m.get_refer_indicator_cascader_select_val(this.indicator_id);
+                        _m.get_refer_indicator_cascader_select_val(this.refer_to_id);
                     }else{
                         $('#create_index_box').show();
                         $('#create_index_box_li').show();
@@ -1126,7 +1137,8 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                     // $('#company-select-2').multiselect('rebuild');
                     // rebuild_project_select_2(elem_2.val());
                 }
-                if(elem_2.find('option').length <= 0 ){
+                //if(elem_2.find('option').length <= 0 ){
+                if(!config.GetURLParameter('indicator_id')){
                     elem_2.empty();
                     var c_list = json.result.company_info_list;
                     for (var index in c_list){
