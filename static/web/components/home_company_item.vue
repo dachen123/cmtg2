@@ -3,8 +3,8 @@
         <img class="attachment-img" :src="item.company_image" alt="Attachment Image">
         <div class="attachment-pushed">
             <h4 class="attachment-heading"><a :href="item.home_addr">{{item.company_name}}</a>
-            <button v-on:click="del_company" class="btn btn-xs btn-danger pull-right">删除</button>
-            <button v-on:click="redirect_to_update" class="btn btn-xs btn-primary pull-right" style="margin-right:10px;">编辑</button>
+            <button v-if="show_btn" v-on:click="del_company" class="btn btn-xs btn-danger pull-right">删除</button>
+            <button  v-if="show_btn" v-on:click="redirect_to_update" class="btn btn-xs btn-primary pull-right" style="margin-right:10px;">编辑</button>
 </h4>
 
             <div class="attachment-text">
@@ -21,6 +21,18 @@
 <script>
     export default {
         props:['item','index'],
+        data:function(){
+            return {
+                show_btn:true
+            }
+        },
+        created:function(){
+            var user_info = localStorage.getItem('user_info');
+            user_info = JSON.parse(user_info);
+            if(user_info.job_level == 'master' || user_info.job_level == 'clerk'){
+                this.show_btn=false;
+            }
+        },
         methods:{
             id_string:function(id){
                 return "company-"+id
