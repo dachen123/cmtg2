@@ -29,6 +29,7 @@ import AttrItem from '../components/company_attr_item.vue'
             emulateHTTP: true
         },
         created:function(){
+            this.company_id = config.GetURLParameter('company_id');
             this.get_company_attr_list()
         },
         components:{
@@ -36,8 +37,10 @@ import AttrItem from '../components/company_attr_item.vue'
         },
         methods:{
             get_company_attr_list:function(){
+                var _m = this;
                 this.$http.get('/get_company_attr_list',{
                     params:{
+                        company_id:_m.company_id
                     }
                 })
                     .then(function(res){
@@ -62,6 +65,7 @@ import AttrItem from '../components/company_attr_item.vue'
                 }
                 var _m = this;
                 this.$http.post('/del_company_attr',{
+                    company_id: _m.company_id,
                     attr_id: attr.attr_id
                 })
                     .then(function(res){
@@ -95,12 +99,14 @@ import AttrItem from '../components/company_attr_item.vue'
             attach_value:"",
             error_msg : "",
             oprate : "create",
+            company_id : '',
         },
         http:{
             emulateJSON: true,
             emulateHTTP: true
         },
         created:function(){
+            this.company_id = config.GetURLParameter('company_id');
         
         },
         watch:{
@@ -134,6 +140,7 @@ import AttrItem from '../components/company_attr_item.vue'
                 var data = {
                     attr_name :this.attr_name,
                     input_type :this.input_type,
+                    company_id: this.company_id
                 }
                 if(this.input_type == 'enum' && this.attach_value.length > 0){
                     var val_list = this.attach_value.split(/；|;/); 
