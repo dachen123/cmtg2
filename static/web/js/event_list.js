@@ -35,6 +35,9 @@ import EventItem from '../components/event_item.vue'
             unverify_per_page:15,
             solved_curent_page:1,
             solved_per_page:15,
+            check_unsolve_event_all:false,
+            check_unverify_event_all:false,
+            handling_msg:''
         },
         http:{
             emulateJSON: true,
@@ -49,11 +52,14 @@ import EventItem from '../components/event_item.vue'
         methods:{
             fetch_event_list:function(event,e_type,page){
                 var aevent_type='all';
+                this.check_unsolve_event_all=false;
+                this.check_unverify_event_all=false;
                 if(e_type){
                     aevent_type = e_type;
                 }
                 else if(!e_type && event){
                   aevent_type = $(event.target).attr('data-e_type');
+                  this.e_type = aevent_type;
                 }
                 var data={aevent_type:aevent_type}
                 if(aevent_type == 'all'){
@@ -131,9 +137,108 @@ import EventItem from '../components/event_item.vue'
                     $('#solved_aevent_paginator').bootstrapPaginator(options);
                 }
             
-            }
+            },
+            batch_handle_post:function(){
+                var child_list = this.$refs.unsolve_event_ref;
+                var aevent_id_list = [];
+                for(var index in child_list){
+                    var i = child_list[index]; 
+                    if(i.is_checked){
+                        aevent_id_list.push(i.item.aevent_id);
+                    }
+                }
+                if(aevent_id_list.length <= 0){
+                    alert('没有选择任何事件');
+                    return;
+                }
+                var _o = this;
+                this.$http.post('/batch_solve_aevent',{
+                    aevent_id_list:JSON.stringify(aevent_id_list),
+                    flag:'true',
+                    handling_msg:_o.handling_msg
+                }).then(function(r){
+                    var r = config.parsebody(r.body,function(){
+                        _o.fetch_event_list(null,_o.e_type);
+                        $('#batch-handle-modal').modal('hide');
+                    });
+                })
 
-        }
+            },
+            batch_pass_post:function(){
+                var child_list = this.$refs.unverify_event_ref;
+                var aevent_id_list = [];
+                for(var index in child_list){
+                    var i = child_list[index]; 
+                    if(i.is_checked){
+                        aevent_id_list.push(i.item.aevent_id);
+                    }
+                }
+                if(aevent_id_list.length <= 0){
+                    alert('没有选择任何事件');
+                    return;
+                }
+                var _o = this;
+                this.$http.post('/batch_solve_aevent',{
+                    aevent_id_list:JSON.stringify(aevent_id_list),
+                    flag:'true',
+                    handling_msg:_o.handling_msg
+                }).then(function(r){
+                    var r = config.parsebody(r.body,function(){
+                        _o.fetch_event_list(null,_o.e_type);
+                        $('#batch-handle-modal').modal('hide');
+                    });
+                })
+            },
+            batch_reject_post:function(){
+                var child_list = this.$refs.unverify_event_ref;
+                var aevent_id_list = [];
+                for(var index in child_list){
+                    var i = child_list[index]; 
+                    if(i.is_checked){
+                        aevent_id_list.push(i.item.aevent_id);
+                    }
+                }
+                if(aevent_id_list.length <= 0){
+                    alert('没有选择任何事件');
+                    return;
+                }
+                var _o = this;
+                this.$http.post('/batch_solve_aevent',{
+                    aevent_id_list:JSON.stringify(aevent_id_list),
+                    flag:'false',
+                    handling_msg:_o.handling_msg
+                }).then(function(r){
+                    var r = config.parsebody(r.body,function(){
+                        _o.fetch_event_list(null,_o.e_type);
+                        $('#batch-handle-modal').modal('hide');
+                    });
+                })
+
+            },
+            batch_handle_modal_show:function(){
+                $('#batch-handle-modal').modal('show');
+            },
+            batch_verify_modal_show:function(){
+                $('#batch-handle-modal').modal('show');
+            },
+
+        },
+        watch:{
+            check_unsolve_event_all:function(val){
+                var child_list = this.$refs.unsolve_event_ref;
+                for(var index in child_list){
+                    child_list[index].is_checked=val; 
+                }
+
+            },
+            check_unverify_event_all:function(val){
+                var child_list = this.$refs.unverify_event_ref;
+                for(var index in child_list){
+                    child_list[index].is_checked=val; 
+                }
+
+            } 
+        },
         
     });
     

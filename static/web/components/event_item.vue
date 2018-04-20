@@ -1,11 +1,15 @@
 <template>
-     <tr v-on:click="redirect_avent_info" :id="id_string(item.aevent_id)" style="cursor:pointer;">
-         <td>{{item.aevent_id}}</td>
+     <tr :id="id_string(item.aevent_id)" style="cursor:pointer;">
+        <td v-if="can_selected">
+            <input v-model="is_checked" type="checkbox"></input>
+        </td>
+         <td v-on:click="redirect_avent_info" >{{item.aevent_id}}</td>
+         <td>{{item.company_name}}</td>
          <th>{{item.project.project_name}}</th>
          <td>{{item.indicator.indicator_name}}</td>
          <td>{{format_time(item.event_time)}}</td>
-         <td><span class="label label-success">{{item.level}}</span></td>
-         <td>
+         <td v-on:click="redirect_avent_info" ><span class="label label-success">{{item.level}}</span></td>
+         <td v-on:click="redirect_avent_info" >
              <span v-if="item.status==='unsend'" class="label label-primary">未解决</span>
              <span v-else-if="item.status==='unsolved'" class="label label-primary">未解决</span>
              <span v-else-if="item.status==='unverified'" class="label label-danger">待审核</span>
@@ -16,7 +20,12 @@
 
 <script>
     export default {
-        props:['item','index'],
+        props:['item','index','can_selected'],
+        data:function(){
+            return{
+                is_checked:false,
+            }
+        },
         methods:{
             id_string:function(id){
                 return "aevent-"+id
