@@ -60,7 +60,7 @@ import AttrItem from '../components/company_attr_item.vue'
                 eventBus.$emit('show_data',attr_info,'create');
             },
             del_company_attr:function(attr){
-                if(!confirm('确认删除公司属性？')){
+                if(!confirm('确认删除公司属性“'+attr.attr_name+'”？')){
                     return;
                 }
                 var _m = this;
@@ -69,7 +69,10 @@ import AttrItem from '../components/company_attr_item.vue'
                     attr_id: attr.attr_id
                 })
                     .then(function(res){
-                        _m.get_company_attr_list()
+                        /* _m.get_company_attr_list()*/
+                        var r = config.parsebody(res.body,function(result){
+                            _m.get_company_attr_list()
+                        })
                     }) 
             },
             rank_company_attr:function(attr,rank_dir){

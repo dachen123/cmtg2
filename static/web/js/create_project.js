@@ -72,6 +72,7 @@ import { config } from './common.js'
                     console.log(r.body);
                     var result = config.parsebody(r.body);
                     // localStorage.removeItem('sidebar_current_content');
+                    window.onbeforeunload = null;
                     window.location.href = result.project_info.home_addr;
                     
                 }) 

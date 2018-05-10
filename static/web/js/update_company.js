@@ -91,6 +91,7 @@ import { config } from './common.js'
                     $('#update-company-box .overlay').hide();
                     var r = config.parsebody(r.body,function(result){
                         localStorage.removeItem('sidebar_current_content');
+                        window.onbeforeunload = null;
                         window.location.href='/company_info?company_id='+result.company_info.company_id;
                     });
                 }) 

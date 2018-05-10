@@ -67,6 +67,15 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
             this.indicator_id = config.GetURLParameter('indicator_id');
             var _m = this;
             // if (this.indicator_id){
+            if(this.indicator_id){
+                $('h1#section-title').html('编辑指标')
+                $('li#inherit_all_box_li').hide();
+            }else{
+                $('h1#section-title').html('添加指标')
+                $('li#inherit_real_box_li').hide();
+                $('li#set_indicator_rule_box_li').hide();
+
+            }
             this.get_indicator_list_for_map(function(){
                 if(_m.indicator_id){
                     _m.get_indicator_info();
@@ -396,7 +405,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                     company_select.append("<option value='"+c.company_id+"'>"+c.company_name+"</option>");  //添加一项option
                 }
                 company_select.val(data.company.company_id);
-                company_select.multiselect('refresh');
+                company_select.multiselect('rebuild');
 
                 indicator_select.empty(); //清空原有的
                 var i_list = data.indicator_list;
@@ -420,7 +429,7 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                     board_select.append("<option value='"+b_list[index].board_id+"'>"+b_list[index].name+"</option>");  //添加一项option
                 }
                 board_select.val(data.board.board_id);
-                board_select.multiselect('refresh');
+                board_select.multiselect('rebuild');
 
             },
             get_indicator_info:function(){
