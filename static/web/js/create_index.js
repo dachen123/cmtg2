@@ -453,16 +453,22 @@ import IndicatorRuleItem from '../components/indicator_rule_item.vue'
                     this.is_refer_indicator = indicator_info.is_refer_indicator;
                     this.refer_to_id = indicator_info.refer_to_id;
                     if(indicator_info.is_refer_indicator == 'true'){
-                        $('#create_index_box').hide();
-                        $('#create_index_box_li').hide();
-                        $('#create_refer_indicator_box').show();
-                        $('#create_refer_indicator_box_li').show();
-                        _m.get_refer_indicator_cascader_select_val(this.refer_to_id);
+                         $('#create_index_box_li').hide();                        
+                         $('#create_refer_indicator_box_li').show();                        
+                         $('#inherit_real_box_li').show();                        
+                         $('#set_indicator_rule_box_li').show();                        
+                         _m.get_refer_indicator_cascader_select_val(this.refer_to_id);
+                         var y=document.getElementById("create_refer_indicator_box_a");
+                         y.innerHTML= '修改属性';                            
+                         $('#create_refer_indicator_box_li').addClass('active');
                     }else{
-                        $('#create_index_box').show();
-                        $('#create_index_box_li').show();
-                        $('#create_refer_indicator_box').hide();
-                        $('#create_refer_indicator_box_li').hide();
+                         $('#create_index_box_li').show();                      
+                         $('#create_refer_indicator_box_li').hide();                      
+                         $('#inherit_real_box_li').show();                      
+                         $('#set_indicator_rule_box_li').show();                      
+                         var y=document.getElementById("create_index_box_a");
+                         y.innerHTML= '修改属性';                      
+                         $('#create_index_box_li').addClass('active');
                     }
                 });
             

@@ -307,7 +307,7 @@ import IndicatorItem from '../components/indicator_transplant_item.vue'
                     }) 
             },
             del_indicator:function(indicator){
-                if(!confirm('确认删除指标？')){
+                if(!confirm('确认删除<'+indicator.indicator_name+'>指标？')){
                     return;
                 }
                 var _m = this;
