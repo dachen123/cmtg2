@@ -324,17 +324,61 @@ import IndicatorItem from '../components/upload_indicator_item.vue'
 
 
     //银行流水数据导入
+    $('#board-select').multiselect({
+        includeSelectAllOption: false,
+        enableFiltering: true,
+        nonSelectedText: '请选择版块',
+        numberDisplayed: 10,
+        allSelectedText: '已选择所有人',
+        onChange:function(option,checked,select){
+            var project_id = root.project_id;
+                var forum_id = option.val();
+            rebuild_indicator_select(null,project_id,forum_id);
+
+        }
+
+    });
+    
    //多选初始化 
     $('#indicator-select').multiselect({
         includeSelectAllOption: true,
         enableFiltering: true,
-        buttonWidth: '100%',
+        // buttonWidth: '100%',
         nonSelectedText: '请选择指标',
         numberDisplayed: 10,
         selectAllText: '全选',
         allSelectedText: '已选择所有指标'
 
     });
+    rebuild_indicator_select(null,config.GetURLParameter('project_id'),$('#board-select').val());
+    function rebuild_indicator_select(company_id,project_id,forum_id){
+        //调用接口获取新值
+        $.ajax({
+            url:'/get_indicator_list_by_condition',
+            type: "GET",
+            data: {
+                company_id:company_id,
+                project_id:project_id,
+                forum_id:forum_id
+            },
+            success: function (json) {
+                var elem = $('#indicator-select');
+                elem.empty(); //清空原有的
+                var i_list = json.result.indicator_info_list;
+                for (var index in i_list){
+                    elem.append("<option value='"+i_list[index].indicator_id+"'>"+i_list[index].indicator_name+"</option>");  //添加一项option
+                }
+                elem.get(0).selectedIndex=0;  //设置Select索引值为1的项选中 
+                $('#indicator-select').multiselect('rebuild');
+
+            },
+            error: function () {
+                console.log('net error');
+            }
+        }); 
+
+    }
+
     //日期选择控件初始化
     $('#bank-data-datetimepicker').datetimepicker({
         locale: 'zh-cn',
